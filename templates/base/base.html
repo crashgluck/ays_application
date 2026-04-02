@@ -1,0 +1,49 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <title>Aguas y Servicios LAZ LTDA</title>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="keywords" content="">
+    <meta name="description" content="">
+
+    <link href="https://fonts.googleapis.com/css?family=Open+Sans:400italic,600italic,700italic,400,600,700,800" rel="stylesheet" type="text/css">
+    <link rel="stylesheet" href="{% static 'css/font-awesome.min.css' %}">
+    <link rel="stylesheet" href="{% static 'css/bootstrap.min.css' %}">
+    <link rel="stylesheet" href="{% static 'css/templatemo_misc.css' %}">
+    <link rel="stylesheet" href="{% static 'css/templatemo_style.css' %}">
+    <link rel="stylesheet" href="{% static 'css/app.css' %}">
+
+    <script src="https://use.fontawesome.com/releases/v6.3.0/js/all.js" crossorigin="anonymous"></script>
+    <script src="{% static 'js/jquery-1.11.1.min.js' %}" defer></script>
+    <script src="{% static 'js/bootstrap-collapse.js' %}" defer></script>
+
+    <link rel="icon" href="{% static 'navbar-logo1.ico' %}" type="image/x-icon">
+</head>
+<body>
+    {% include 'base/navbar.html' %}
+
+    <main class="page-shell page-top-spacer">
+        <div class="container">
+            {% if messages %}
+            <div class="message-stack">
+                {% for message in messages %}
+                <div class="alert {% if 'error' in message.tags %}alert-danger{% elif 'success' in message.tags %}alert-success{% elif 'warning' in message.tags %}alert-warning{% else %}alert-info{% endif %} alert-dismissible" role="alert">
+                    {{ message }}
+                    <button type="button" class="close" data-dismiss="alert" aria-label="Cerrar">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                {% endfor %}
+            </div>
+            {% endif %}
+        </div>
+        {% block content %}{% endblock %}
+    </main>
+
+    {% include 'base/footer.html' %}
+    <script src="{% static 'js/landing-indicators.js' %}" defer></script>
+    {% block scripts %}{% endblock %}
+</body>
+</html>

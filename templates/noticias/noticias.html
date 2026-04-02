@@ -1,0 +1,45 @@
+{% extends 'base/base.html' %}
+{% load static %}
+
+{% block content %}
+<section class="page-section" id="news">
+    <div class="container">
+        <div class="text-center" style="margin-bottom: 2rem;">
+            <h2 class="templatemo_pricing_title">Noticias</h2>
+            <h3 class="section-subheading text-muted">Mantente informado.</h3>
+        </div>
+
+        <div class="row">
+            {% for home_content in home_contents %}
+            <div class="col-md-6 col-lg-4" style="margin-bottom: 1.5rem;">
+                <div class="panel panel-default">
+                    <div class="panel-body">
+                        {% if home_content.imagen %}
+                        <img src="{{ home_content.imagen.url }}" alt="Noticia" class="img-responsive" style="width: 100%; height: 220px; object-fit: cover;">
+                        {% else %}
+                        <img src="{% static 'images/66059.jpg' %}" alt="Noticia" class="img-responsive" style="width: 100%; height: 220px; object-fit: cover;">
+                        {% endif %}
+
+                        <div style="margin-top: 1rem;">
+                            <span class="label label-danger">{{ home_content.date }}</span>
+                            <h4 style="margin-top: .9rem;">{{ home_content.name }}</h4>
+                            <p class="text-muted">
+                                {{ home_content.description|slice:":140" }}
+                                {% if home_content.description|length > 140 %}...{% endif %}
+                            </p>
+                            <a class="btn btn-primary btn-sm" href="{% url 'noticia_detalle' home_content.id %}">
+                                Leer mas
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            {% empty %}
+            <div class="col-12">
+                <div class="alert alert-info text-center">No hay noticias publicadas aun.</div>
+            </div>
+            {% endfor %}
+        </div>
+    </div>
+</section>
+{% endblock %}

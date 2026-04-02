@@ -1,0 +1,84 @@
+{% extends 'base/base.html' %}
+{% load static %}
+
+{% block content %}
+<section class="mx-auto w-100 py-4" id="tarifario">
+    <div class="container-fluid">
+        <div class="text-center">
+            <h2 class="templatemo_pricing_title">Reportes</h2>
+            <p class="templatemo_pricing_subtitle">
+                Crea, revisa y administra reportes. Solo administradores pueden eliminarlos.
+            </p>
+        </div>
+
+        <div class="text-center" style="margin: 1rem 0 2rem;">
+            <a href="{% url 'enviar_reporte' %}" class="btn btn-success">Crear nuevo reporte</a>
+        </div>
+
+        <div class="table-responsive">
+            <table class="table table-hover table-striped table-bordered report-table">
+                <thead>
+                    <tr>
+                        <th class="nowrap">ID</th>
+                        <th>Fecha y hora</th>
+                        <th>Operador Central</th>
+                        <th>Jefe de turno</th>
+                        <th>Estado</th>
+                        <th>Acciones</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for reporte in reportes %}
+                    <tr>
+                        <td>{{ reporte.id }}</td>
+                        <td>{{ reporte.fecha_hora|date:"d/m/Y" }} - {{ reporte.fecha_hora|time:"H:i" }}</td>
+                        <td>{{ reporte.central|upper }}</td>
+                        <td>{{ reporte.jefe_semana|upper }}</td>
+                        <td>
+                            {% if reporte.confirmado %}
+                            <span class="label label-success">Enviado</span>
+                            {% else %}
+                            <span class="label label-warning">Pendiente</span>
+                            {% endif %}
+                        </td>
+                        <td>
+                            <a href="{% url 'ver_reporte' reporte.id %}" target="_blank" class="btn btn-sm btn-info">Ver</a>
+                            <a href="{% url 'descargar_reporte_pdf' reporte.id %}" class="btn btn-sm btn-primary">PDF</a>
+                            {% if user.is_superuser %}
+                            <a href="{% url 'eliminar_reporte' reporte.id %}" class="btn btn-sm btn-danger">Eliminar</a>
+                            {% endif %}
+                        </td>
+                    </tr>
+                    {% empty %}
+                    <tr>
+                        <td colspan="6" class="text-center section-muted">Aun no hay reportes registrados.</td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+
+        {% if page_obj.paginator.num_pages > 1 %}
+        <nav aria-label="Paginacion de reportes" class="text-center">
+            <ul class="pagination pagination-sm" style="display: inline-flex;">
+                {% if page_obj.has_previous %}
+                <li><a href="?page={{ page_obj.previous_page_number }}">&laquo;</a></li>
+                {% else %}
+                <li class="disabled"><span>&laquo;</span></li>
+                {% endif %}
+
+                <li class="active">
+                    <span>Pagina {{ page_obj.number }} de {{ page_obj.paginator.num_pages }}</span>
+                </li>
+
+                {% if page_obj.has_next %}
+                <li><a href="?page={{ page_obj.next_page_number }}">&raquo;</a></li>
+                {% else %}
+                <li class="disabled"><span>&raquo;</span></li>
+                {% endif %}
+            </ul>
+        </nav>
+        {% endif %}
+    </div>
+</section>
+{% endblock %}

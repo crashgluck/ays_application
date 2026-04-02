@@ -1,0 +1,57 @@
+﻿{% load static %}
+
+<header class="site-header">
+    <div class="site-market-bar" id="market-indicators" aria-live="polite" data-source="https://mindicador.cl/api">
+        <div class="container site-market-bar-inner">
+            <div class="site-market-items">
+                <span class="site-market-item">UF: <strong data-indicator-value="uf">--</strong></span>
+                <span class="site-market-item">Dolar: <strong data-indicator-value="dolar">--</strong></span>
+                <span class="site-market-item">UTM: <strong data-indicator-value="utm">--</strong></span>
+            </div>
+            <small class="site-market-status" id="indicatorStatus">Cargando indicadores...</small>
+            <small class="site-market-error hidden" id="indicatorError">Indicadores no disponibles.</small>
+        </div>
+    </div>
+    <nav class="navbar navbar-default site-navbar" role="navigation">
+        <div class="container">
+            <div class="navbar-header">
+                <button
+                    type="button"
+                    class="navbar-toggle collapsed site-navbar-toggle"
+                    data-toggle="collapse"
+                    data-target="#main-navbar"
+                    aria-expanded="false"
+                    aria-controls="main-navbar"
+                >
+                    <span class="sr-only">Mostrar menu</span>
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                </button>
+                <a class="navbar-brand site-brand" href="{% url 'inicio' %}">
+                    <img class="site-brand-logo" src="{% static 'images/navbar-logo1.webp' %}" alt="Logo Aguas y Servicios">
+                    <span class="site-brand-text">
+                    <span class="site-brand-main">Aguas y Servicios</span>
+                    <span class="site-brand-sub">Los Altos de Zapallar</span>
+                    </span>
+                </a>
+            </div>
+
+            <div class="collapse navbar-collapse" id="main-navbar">
+                <ul class="nav navbar-nav navbar-right site-nav-list">
+                    {% if user.is_superuser or user.is_authenticated and user_belongs_to_central %}
+                    <li class="{% if request.resolver_match.url_name == 'report_views' %}active{% endif %}"><a class="menu" href="{% url 'report_views' %}"><span>Reporte Central</span></a></li>
+                    <li><a class="menu" href="{% url 'user_logout' %}"><span>Salir</span></a></li>
+                    {% else %}
+                    <li class="{% if request.resolver_match.url_name == 'user_login' %}active{% endif %}"><a class="menu" href="{% url 'user_login' %}"><span>Entrar</span></a></li>
+                    {% endif %}
+                    <li class="{% if request.resolver_match.url_name == 'inicio' %}active{% endif %}"><a class="menu" href="{% url 'inicio' %}"><span>Inicio</span></a></li>
+                    <li class="{% if request.resolver_match.url_name == 'tarifas_condiciones' %}active{% endif %}"><a class="menu" href="{% url 'tarifas_condiciones' %}"><span>Tarifas y Servicios</span></a></li>
+                    <li class="{% if request.resolver_match.url_name == 'noticias' %}active{% endif %}"><a class="menu" href="{% url 'noticias' %}"><span>Noticias</span></a></li>
+                    <li class="{% if request.resolver_match.url_name == 'contacts' %}active{% endif %}"><a class="menu" href="{% url 'contacts' %}"><span>Contactos</span></a></li>
+                    <li class="{% if request.resolver_match.url_name == 'help' %}active{% endif %}"><a class="menu" href="{% url 'help' %}"><span>Ayuda</span></a></li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+</header>

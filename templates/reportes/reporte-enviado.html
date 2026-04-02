@@ -1,0 +1,19 @@
+{% extends 'base/base.html' %}
+
+{% block content %}
+<section class="container py-5">
+    <div class="row justify-content-center">
+        <div class="col-md-9 col-lg-7">
+            <div class="panel panel-success">
+                <div class="panel-body text-center p-4">
+                    <h2 class="text-success">Reporte enviado con exito</h2>
+                    <p class="section-muted">
+                        El reporte fue enviado por correo a Seguridad, Obras y Administracion.
+                    </p>
+                    <a href="{% url 'report_views' %}" class="btn btn-primary">Volver a reportes</a>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+{% endblock %}

@@ -1,0 +1,52 @@
+{% extends 'base/base.html' %}
+{% load static %}
+
+{% block content %}
+<section class="container login-page py-4">
+    <div class="row">
+        <div class="col-sm-10 col-sm-offset-1 col-md-6 col-md-offset-3 login-col">
+            <div class="panel panel-default login-card">
+                <div class="panel-body">
+                    <div class="text-center login-brand">
+                        <img class="img-responsive center-block" src="{% static 'images/navbar-logo1.webp' %}" alt="AyS">
+                        <h3 class="login-title">Iniciar sesion</h3>
+                        <p class="section-muted">Accede para crear y administrar reportes.</p>
+                    </div>
+
+                    <form method="post" action="{% url 'user_login' %}" novalidate>
+                        {% csrf_token %}
+                        {% if form.non_field_errors %}
+                        <div class="alert alert-danger">
+                            {{ form.non_field_errors }}
+                        </div>
+                        {% endif %}
+
+                        <div class="form-group">
+                            <label for="{{ form.username.id_for_label }}">Usuario</label>
+                            {{ form.username }}
+                            {% if form.username.errors %}
+                            <small class="text-danger">{{ form.username.errors|striptags }}</small>
+                            {% endif %}
+                        </div>
+
+                        <div class="form-group">
+                            <label for="{{ form.password.id_for_label }}">Contrasena</label>
+                            {{ form.password }}
+                            {% if form.password.errors %}
+                            <small class="text-danger">{{ form.password.errors|striptags }}</small>
+                            {% endif %}
+                        </div>
+
+                        <button type="submit" class="btn btn-primary btn-block py-2">Iniciar sesion</button>
+                    </form>
+
+                    <p class="small-note text-center mt-3 mb-0">
+                        Olvidaste tu contrasena?
+                        <a href="{% url 'password_reset' %}">Recuperar contrasena</a>
+                    </p>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+{% endblock %}

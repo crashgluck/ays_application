@@ -1,0 +1,13 @@
+﻿{% extends 'base/base.html' %}
+{% load static %}
+
+{% block content %}
+<div class="landing-page">
+    {% include 'landing/hero.html' %}
+    {% include 'landing/services.html' %}
+    {% include 'landing/info.html' %}
+    {% include 'landing/about.html' %}
+    {% include 'landing/logos_grupo.html' %}
+    {% include 'landing/contacts_include.html' %}
+</div>
+{% endblock %}

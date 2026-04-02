@@ -1,0 +1,23 @@
+{% extends 'base/base.html' %}
+
+{% block content %}
+<section class="container py-5">
+    <div class="row justify-content-center">
+        <div class="col-md-8 col-lg-6">
+            <div class="panel panel-danger">
+                <div class="panel-body text-center p-4">
+                    <h2>Confirmar eliminacion</h2>
+                    <p class="section-muted">Esta accion eliminara el reporte #{{ reporte.id }} de forma permanente.</p>
+                    <form action="{% url 'eliminar_reporte' reporte.id %}" method="post">
+                        {% csrf_token %}
+                        {% if user.is_superuser %}
+                        <button type="submit" class="btn btn-danger">Eliminar reporte</button>
+                        {% endif %}
+                        <a href="{% url 'report_views' %}" class="btn btn-default">Cancelar</a>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+{% endblock %}

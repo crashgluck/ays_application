@@ -1,0 +1,717 @@
+{% extends 'base/base.html' %}
+{% load static %}
+
+{% block content %}
+<div class="container py-5"><br><br><br>
+    
+    <div class="row py-5">
+      <div class="col-lg-10 mx-auto">
+        <div class="card rounded shadow border-0">
+          <div class="card-body p-5 bg-white rounded">
+            <h1 class="text-center">Confirmar Reporte</h1>
+            <p>Por favor revisar bien antes de enviar</p>
+            <p>En caso de error siempre revisar el estado de conexión de internet, en este proceso se hace el envío de correos automaticos</p>
+            <div class="table-responsive">
+              <form action="{% url 'guardar_reporte' reporte.id %}" method="post">
+                
+              <table id="example" style="width:100%" class="table table-striped table-bordered">
+                <thead>
+                  <tr>
+                    <th class="text-center py-3 text-light bg-dark" colspan="4">FECHA</th>                    
+                  </tr>
+                </thead>
+                <thead>
+                    <tr>
+                      <th>ITEM</th>
+                      <th>UNIDAD</th>
+                      <th class="bg-success">FORESTA</th>
+                      <th class="bg-info">LOMAS</th>                      
+                    </tr>
+                  </thead>
+                <tbody>
+                  <tr>
+                    <th>Temperatura</th>
+                    <th>Celcius</th>
+                    <td class="text-center">{{ reporte.temperatura }}</td>
+                    <td class="text-center">{{ reporte.lomas_temperatura }}</td>
+                   
+                  </tr>
+                  <tr>
+                    <td>Viento</td>
+                    <td>Nudos</td>
+                    <td class="text-center">{{ reporte.viento }}</td>
+                    <td class="text-center">{{ reporte.lomas_viento }}</td>
+                   
+                  </tr>
+                  <tr>
+                    <td>Direccion del Viento</td>
+                    <td>Grados</td>
+                    <td class="text-center">{{ reporte.direccion }}</td>
+                    <td class="text-center">{{ reporte.lomas_direccion }}</td>
+                   
+                  </tr>
+                  <tr>
+                    <td>Humedad</td>
+                    <td>%</td>
+                    <td class="text-center">{{ reporte.humedad }}</td>
+                    <td class="text-center">{{ reporte.lomas_humedad }}</td>
+                    
+                  </tr>
+                  <tr>
+                    <td>Precipitaciones día</td>
+                    <td>mm</td>
+                    <td class="text-center">{{ reporte.precipitaciones_dia }}</td>
+                    <td class="text-center">{{ reporte.lomas_precipitaciones_dia }}</td>
+                   
+                  </tr>
+                  
+                  <tr>
+                    <td>IGP</td>
+                    <td>KPI</td>
+                    <td class="text-center">{{ reporte.igp }}</td>
+                    <td class="text-center">{{ reporte.lomas_igp }}</td>
+                    
+                    
+                  </tr>
+                  <tr>
+                    <td>Nivel de alerta</td>
+                    <td>KPI</td>
+                    <td class="text-center">{{ reporte.nvl_alerta }}</td>
+                    <td class="text-center">{{ reporte.lomas_nvl_alerta }}</td>
+                   
+                  </tr>
+                  <tr>
+                    <td>Factor de seguridad</td>
+                    <td>KPI</td>
+                    <td class="text-center">{{ reporte.factor_seguridad }}</td>
+                    <td class="text-center">-</td>
+                    
+                  </tr>
+                  <tr>
+                    <td>Nivel de riesgos operativos</td>
+                    <td>KPI</td>
+                    <td class="text-center">{{ reporte.nivel_riesgos_operativos }}</td>
+                    <td class="text-center">-</td>                    
+                  </tr>
+                  <thead>
+                    <tr>
+                      <th colspan="4" class="text-center py-3 text-light bg-dark">PERSONAL DE TURNO</th>                    
+                    </tr>
+                  </thead>
+                  <thead>
+                      <tr>
+                        <th>CARGO</th>
+                        <th colspan="2">NOMBRE</th>
+                        <th>MEDIO/LUGAR</th>                                             
+                      </tr>
+                    </thead>
+                  <tr>
+                    <td>Jefe semana</td>
+                    <td colspan="2" class="text-center">{{ reporte.jefe_semana }}</td>
+                    <td class="text-center">{{ reporte.ml_jefe_semana }}</td>                   
+                    
+                  </tr>
+                  <tr>
+                    <td>Administrador COM</td>
+                    <td colspan="2" class="text-center">{{ reporte.segundo_jefe }}</td>
+                    <td class="text-center">{{ reporte.ml_segundo_jefe }}</td>                   
+                    
+                  </tr>
+                  
+                  <tr>
+                    <td>Oficina AyS</td>
+                    <td colspan="2" class="text-center">{{ reporte.oficina_ays }}</td>
+                    <td class="text-center">{{ reporte.ml_oficina_ays }}</td>                   
+                    
+                  </tr>
+                  <tr>
+                    <td>ET alerta semana</td>
+                    <td colspan="2" class="text-center">{{ reporte.et_alerta_semana }}</td>
+                    <td class="text-center">{{ reporte.ml_et_alerta_semana }}</td>
+  
+                  </tr>
+                  <tr>
+                    <td>Encargado de turno</td>
+                    <td colspan="2" class="text-center">{{ reporte.encargado_turno }}</td>
+                    <td class="text-center">{{ reporte.ml_encargado_turno }}</td>
+                    
+                    
+                  </tr>
+                  <tr>
+                    <td>Central</td>
+                    <td colspan="2" class="text-center">{{ reporte.central }}</td>
+                    <td class="text-center">{{ reporte.ml_central }}</td>
+                    
+                   
+                  </tr>
+                  <tr>
+                    <td>Guardia seguridad</td>
+                    <td colspan="2" class="text-center">{{ reporte.guardia_seguridad }}</td>
+                    <td class="text-center">{{ reporte.ml_guardia_seguridad }}</td>
+                   
+                   
+                  </tr>
+                  <tr>
+                    <td>Guardia seguridad 2</td>
+                    <td colspan="2" class="text-center">{{ reporte.guardia_seguridad2 }}</td>
+                    <td class="text-center">{{ reporte.ml_guardia_seguridad2 }}</td>
+                   
+                   
+                  </tr>
+                  <tr>
+                    <td>Guardia seguridad 3</td>
+                    <td colspan="2" class="text-center">{{ reporte.guardia_seguridad3 }}</td>
+                    <td class="text-center">{{ reporte.ml_guardia_seguridad3 }}</td>
+                   
+                   
+                  </tr>
+                  <tr>
+                    <td>Relacionador 1</td>
+                    <td colspan="2" class="text-center">{{ reporte.relacionador }}</td>
+                    <td class="text-center">{{ reporte.ml_relacionador}}</td>
+                    
+                    
+                  </tr>
+                  <tr>
+                    <td>Relacionador 2</td>
+                    <td colspan="2" class="text-center">{{ reporte.relacionador2 }}</td>
+                    <td class="text-center">{{ reporte.ml_relacionador2 }}</td>
+                    
+                    
+                  </tr>
+                  
+                  <tr>
+                    <td>Drone 1</td>
+                    <td colspan="2" class="text-center">{{ reporte.drone }}</td>
+                    <td class="text-center">{{ reporte.ml_drone }}</td>
+                    
+                    
+                    
+                  </tr>
+                  <tr>
+                    <td>Drone 2</td>
+                    <td colspan="2" class="text-center">{{ reporte.drone2 }}</td>
+                    <td class="text-center">{{ reporte.ml_drone2 }}</td>
+                    
+                   
+                    
+                  </tr>
+                  <tr>
+                    <td>Eq. Técnico 1</td>
+
+                    <td colspan="2" class="text-center">{{ reporte.eq_tecnico_1 }}</td>
+                    <td class="text-center">{{ reporte.ml_eq_tecnico_1}}</td>
+                    
+                   
+                   
+                  </tr>
+                  <tr>
+                    <td>Eq. Técnico 2</td>
+                    <td colspan="2" class="text-center">{{ reporte.eq_tecnico_2 }}</td>
+                    <td class="text-center">{{ reporte.ml_eq_tecnico_2 }}</td>
+                    
+                  </tr>
+                  <tr>
+                    <td>Brigada IF</td>
+                    <td colspan="2" class="text-center">{{ reporte.brigada_if }}</td>
+                    <td class="text-center">{{ reporte.ml_brigada_if }}</td>
+                   
+                    
+                  </tr>
+                  <thead>
+                    <tr>
+                      <th colspan="4" class="text-center py-3 text-light bg-dark">RRHH (TABLA NUEVA)</th>
+                    </tr>
+                  </thead>
+                  <thead>
+                    <tr>
+                      <th>CARGO</th>
+                      <th>NOMBRE</th>
+                      <th>MEDIO/LUGAR</th>
+                      <th>OBSERVACION</th>
+                    </tr>
+                  </thead>
+                  {% for section in rrhh_sections %}
+                  <tr>
+                    <td colspan="4" class="bg-dark text-light"><strong>{{ section.title }}</strong></td>
+                  </tr>
+                  {% for row in section.rows %}
+                  <tr>
+                    <td>{{ row.label }}</td>
+                    <td class="text-center">{{ row.nombre }}</td>
+                    <td class="text-center">{{ row.medio }}</td>
+                    <td class="text-center">{{ row.observacion }}</td>
+                  </tr>
+                  {% endfor %}
+                  {% endfor %}
+                  <thead>
+                  <tr>
+                    <th colspan="4" class="text-center py-3 text-light bg-dark">VEHICULOS COMUNIDAD</th>
+                  </tr>
+                </thead>
+                <thead>
+                    <tr>
+                      <th>VEHICULO</th>
+                      <th colspan="2">ESTADO</th>
+                      <th>ODOMETRO (KMS)</th>
+                    </tr>
+                  </thead>
+                <tr>
+                  <td>MOVIL 13</td>
+                  <td colspan="2" class="text-center">{{ reporte.movil_13_stado }}</td>
+                  <td class="text-center">{{ reporte.movil_13_odometro }}</td>
+
+                </tr>
+                <tr>
+                  <td>MOVIL 81</td>
+                  <td colspan="2" class="text-center">{{ reporte.movil_11_stado }}</td>
+                  <td class="text-center">{{ reporte.movil_11_odometro }}</td>
+
+                </tr>
+                <tr>
+                  <td>ARRIENDO</td>
+                  <td colspan="2" class="text-center">{{ reporte.movil_14_stado }}</td>
+                  <td class="text-center">{{ reporte.movil_14_odometro }}</td>
+
+                </tr>
+
+                  <thead>
+                    <tr>
+                      <th colspan="4" class="text-center py-3 text-light bg-dark">INDICADORES</th>                    
+                    </tr>
+                  </thead>
+                  <thead>
+                      <tr>
+                        <th class="bg-warning">ELEC</th>
+                        <th class="bg-success">CENTRAL</th>
+                        <th class="bg-success">GHR</th> 
+                        <th class="bg-info">LOMAS</th>                                             
+                      </tr>
+                    </thead>
+                  <tr>
+                    <td>L1</td>
+                    <td class="text-center">{{ reporte.elect_central_l1 }}</td>
+                    <td class="text-center">{{ reporte.elect_ghr_l1 }}</td>
+                    <td class="text-center">{{ reporte.elect_lomas_l1 }}</td>
+                    
+                  </tr>
+                  <tr>
+                    <td>L2</td>
+                    <td class="text-center">{{ reporte.elect_central_l2 }}</td>
+                    <td class="text-center">{{ reporte.elect_ghr_l2 }}</td>
+                    <td class="text-center">{{ reporte.elect_lomas_l2 }}</td>
+                   
+                  </tr>
+                  <tr>
+                    <td>L3</td>
+                    <td class="text-center">{{ reporte.elect_central_l3 }}</td>
+                    <td class="text-center">{{ reporte.elect_ghr_l3 }}</td>
+                    <td class="text-center">{{ reporte.elect_lomas_l3 }}</td>
+                    
+                  </tr>
+
+                  <thead>
+                    <tr>
+                      <th class="bg-warning">ELEC</th>
+                      <th class="bg-info">SM 3</th>
+                      <th class="bg-info">SM 1</th> 
+                      <th class="bg-info">TORRE Y</th>                                             
+                    </tr>
+                  </thead>
+                <tr>
+                  
+
+                  <td>L1</td>
+                  <td class="text-center">{{ reporte.sm_3_l1 }}</td>
+                  <td class="text-center">{{ reporte.sm_1_l1 }}</td>
+                  <td class="text-center">{{ reporte.torre_y_l1 }}</td>
+                  
+                </tr>
+                <tr>
+                  <td>L2</td>
+                  <td class="text-center">{{ reporte.sm_3_l2 }}</td>
+                  <td class="text-center">{{ reporte.sm_1_l2 }}</td>
+                  <td class="text-center">{{ reporte.torre_y_l2 }}</td>     
+                  
+                  
+                  
+                  
+                  
+                </tr>
+                <tr>
+                  <td>L3</td>
+                  <td class="text-center">{{ reporte.sm_3_l3 }}</td>
+                  <td class="text-center">{{ reporte.sm_1_l3 }}</td>
+                  <td class="text-center">{{ reporte.torre_y_l3 }}</td>
+                  
+                </tr>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+                  <tr>
+                    <td class="bg-warning">SOLAR</td>
+                    <td>3 LED IZQ</td>
+                    <td>3 LED DER</td>
+                    <td>AMARILLO</td>
+                    
+                  </tr>
+                  <tr>
+                    <td>ON/OFF</td>
+                    <td class="text-center">{{ reporte.solar_central_3led_izq }}</td>
+                    <td class="text-center">{{ reporte.solar_ghr_3led_der }}</td>
+                    <td class="text-center">{{ reporte.solar_lomas_led_amarillo }}</td>
+
+                    
+                    
+                  </tr>
+                  <tr>
+                    <td class="bg-danger">INVERSORES</td>
+                    <td>INV IZQ</td>
+                    <td>INV MEDIO</td>
+                    <td>INV DER</td>
+                    
+                  </tr>
+                  <tr>
+                    <td>LUZ ROJA ON/OFF</td>
+                    <td class="text-center">{{ reporte.inversor_central_izq }}</td>
+                    <td class="text-center">{{ reporte.inversor_ghr_medio }}</td>
+                    <td class="text-center">{{ reporte.inversor_lomas_derecho }}</td>
+                    
+                  </tr>
+                  <tr>
+                    <td class="bg-dark text-light">ALARMA UGPS ACTIVADA</td>
+                    <td class="text-center" colspan="3">{{ reporte.indicar_cual_cctv }}</td>
+                  </tr>
+                  <tr>
+                    <td>CCTV SISTEMA O</td>
+                    <td class="text-center" colspan="3">{{ reporte.cctv_sistema_o }}</td>
+                  </tr>
+                  <tr>
+                    <td>OBSERVACIONES CCTV</td>
+                    <td class="text-center" colspan="3">{{ reporte.observaciones }}</td>
+                  </tr>
+
+                  <tr>
+                    <td class="bg-dark text-light">PORTONES</td>
+                  <td class="text-center">MESTIZA</td>  
+                  <td class="text-center">GH</td>   
+                  <td class="text-center">CARGADERO</td>                        
+                  </tr>
+                  
+                  
+                  <tr>
+                    <td>ESTADO</td>
+                    <td class="text-center">{{ reporte.porton_mestiza }}</td>  
+                  <td class="text-center">{{ reporte.porton_ghr }}</td>   
+                  <td class="text-center">{{ reporte.porton_cargadero }}</td> 
+                    
+                  </tr>
+                  <tr>
+                    <td>OBSERVACIONES</td>
+                    <td class="text-center">{{ reporte.porton_mestiza_observaciones }}</td>  
+                    <td class="text-center">{{ reporte.porton_ghr_observaciones }}</td>   
+                    <td class="text-center">{{ reporte.porton_cargadero_observaciones }}</td> 
+                    
+                  </tr>
+
+                  <tr>
+                    <td class="bg-dark text-light">PORTONES</td>
+                  <td class="text-center">PORTON I</td>  
+                  <td class="text-center">PORTON NORTE</td>   
+                  <td class="text-center">SALA MESTIZA</td>                        
+                  </tr>
+                  <tr>
+                    <td>ESTADO</td>
+                    <td class="text-center">{{ reporte.porton_i }}</td>  
+                  <td class="text-center">{{ reporte.porton_norte }}</td>   
+                  <td class="text-center">{{ reporte.sala_mestiza }}</td> 
+                    
+                  </tr>
+                  <tr>
+                    <td>OBSERVACIONES</td>
+                    <td class="text-center">{{ reporte.porton_i_observaciones }}</td>  
+                    <td class="text-center">{{ reporte.porton_norte_observaciones }}</td>   
+                    <td class="text-center">{{ reporte.sala_mestiza_observaciones }}</td> 
+                    
+                  </tr>
+                  
+                  
+                  
+
+                  <thead>
+                    <tr>
+                      <th colspan="4" class="text-center py-3 text-light bg-dark">OPERATIVOS</th>                    
+                    </tr>
+                  </thead>
+                  <thead>
+                      <tr>
+                        <th>ITEM</th>
+                        <th>CANTIDAD</th>
+                        <th colspan="2">OBSERVACIONES</th> 
+                                                                    
+                      </tr>
+                    </thead>
+                  <tr>
+                    <td>VUELOS DRONE DIA</td>
+                    <td class="text-center">{{ reporte.vuelos_drone }}</td>
+                    <td colspan="2" class="text-center">{{ reporte.obs_vuelos_drone }}</td>
+                                      
+                  </tr>
+                  <tr>
+                    <td>ACCESOS EXTERNOS TURNO</td>
+                    <td class="text-center">{{ reporte.accesos_extern_turn }}</td>
+                    <td colspan="2" class="text-center">{{ reporte.obs_accesos_extern_turn }}</td>
+                                      
+                  </tr>
+                  <tr>
+                    <td>ACCESOS VENTAS DIA</td>
+                    <td class="text-center">{{ reporte.accesos_ventas_dia }}</td>
+                    <td colspan="2" class="text-center">{{ reporte.obs_accesos_ventas_dia }}</td>
+                                      
+                  </tr>
+                 
+                  
+
+              
+
+                  <thead>
+                    <tr>
+                      <th colspan="4" class="text-center py-3 text-light bg-dark">PRESIONES</th>               
+                      
+                    </tr>
+
+                    
+                  </thead>
+                  <thead>
+                    
+                      <tr>
+                        <th>ITEM</th>
+                        <th>LECTURA</th>
+                        <th colspan="2">OBSERVACIONES <small> (Dejar en blanco si no hay observaciones)</small></th>
+  
+                      </tr>
+                    </thead>
+                    
+                  <tr>
+                    
+
+
+
+
+                    <td>LOMAS</td>
+                    <td class="text-center">{{ reporte.presion_lomas }}</td>
+                    <td colspan="2" class="text-center">{{ reporte.presion_lomas_obs }}</td>
+  
+                  </tr>
+                  <tr>
+                    <td>GH</td>
+                    <td class="text-center">{{ reporte.presion_gh }}</td>
+                    <td colspan="2" class="text-center">{{ reporte.presion_gh_obs }}</td>
+  
+                  </tr>
+                  <tr>
+                    <td>SM Ch-2</td>
+                    <td class="text-center">{{ reporte.sm_ch2 }}</td>
+                    <td colspan="2" class="text-center">{{ reporte.sm_ch2_obs }}</td>
+  
+                  </tr>
+                  <tr>
+                    <td>SM 3</td>
+                    <td class="text-center">{{ reporte.sm_3 }}</td>
+                    <td colspan="2" class="text-center">{{ reporte.sm_3_obs }}</td>
+  
+                  </tr>
+                  <tr>
+                    <td>SM 1</td>
+                    <td class="text-center">{{ reporte.sm_1 }}</td>
+                    <td colspan="2" class="text-center">{{ reporte.sm_1_obs }}</td>
+  
+                  </tr>
+                  
+                  
+                  
+                  
+                  
+                  <tr>
+                    <td>PEAS</td>
+                    <td class="text-center">{{ reporte.torre_y }}</td>
+                    <td colspan="2" class="text-center">{{ reporte.torre_y_obs }}</td>
+  
+                  </tr>
+
+
+
+
+
+
+
+
+                  
+
+                  <thead>
+                    <tr class="bg-dark text-white">
+                      <th>BALIZAS (indique cual encendida)</th>
+                      <th>ON/OFF</th>
+                      <th colspan="2">OBSERVACIONES</th>                                                                   
+                    </tr>
+                  </thead>
+                  <tr>
+                    <td>PEAS AIRES</td>
+                    <td class="text-center">{{ reporte.peas_aires }}</td>
+                    <td colspan="2" class="text-center">{{ reporte.obs_peas_aires }}</td>                                 
+                  </tr>
+                  <tr>
+                    <td>CARGADERO AIRES</td>
+                    <td class="text-center">{{ reporte.cargadero_aires }}</td>
+                    <td colspan="2" class="text-center">{{ reporte.obs_cargadero_aires }}</td>
+                </tr>
+                <tr>
+                    <td>SALA 1</td>
+                    <td class="text-center">{{ reporte.sala_1 }}</td>
+                    <td colspan="2" class="text-center">{{ reporte.obs_sala_1 }}</td>
+                </tr>
+                <tr>
+                    <td>SALA 2</td>
+                    <td class="text-center">{{ reporte.sala_2 }}</td>
+                    <td colspan="2" class="text-center">{{ reporte.obs_sala_2 }}</td>
+                </tr>
+                <tr>
+                    <td>SALA CLUB 2</td>
+                    <td class="text-center">{{ reporte.sala_club2 }}</td>
+                    <td colspan="2" class="text-center">{{ reporte.obs_sala_club2 }}</td>
+                </tr>
+                <tr>
+                    <td>ESTANQUES X</td>
+                    <td class="text-center">{{ reporte.estanques_x }}</td>
+                    <td colspan="2" class="text-center">{{ reporte.obs_estanques_x }}</td>
+                </tr>
+                <tr>
+                    <td>MESTIZA - BELLOTO</td>
+                    <td class="text-center">{{ reporte.mestiza_belloto }}</td>
+                    <td colspan="2" class="text-center">{{ reporte.obs_mestiza_belloto }}</td>
+                </tr>
+                <tr>
+                    <td>ELEVADORA GH</td>
+                    <td class="text-center">{{ reporte.elevadora_gh }}</td>
+                    <td colspan="2" class="text-center">{{ reporte.obs_elevadora_gh }}</td>
+                </tr>
+                <tr>
+                    <td>SISTEMA O</td>
+                    <td class="text-center">{{ reporte.sistema_o }}</td>
+                    <td colspan="2" class="text-center">{{ reporte.obs_sistema_o }}</td>
+                </tr>
+
+                <tr>
+                  <td>POZO CH-1</td>
+                  <td class="text-center">{{ reporte.pozo_ch1 }}</td>
+                  <td colspan="2" class="text-center">{{ reporte.pozo_ch1_observaciones }}</td>
+              </tr>
+
+              <tr>
+                <td>PLANTA MIRADOR GH</td>
+                <td class="text-center">{{ reporte.planta_mirador_gh }}</td>
+                <td colspan="2" class="text-center">{{ reporte.planta_mirador_gh_observaciones }}</td>
+            </tr>
+
+            <tr>
+              <td>POZO P7</td>
+              <td class="text-center">{{ reporte.pozo_p7 }}</td>
+              <td colspan="2" class="text-center">{{ reporte.pozo_p7_observaciones }}</td>
+          </tr>
+
+          <tr>
+            <td>DIAMANTE 1</td>
+            <td class="text-center">{{ reporte.diamante_1 }}</td>
+            <td colspan="2" class="text-center">{{ reporte.diamante_1_observaciones }}</td>
+        </tr>
+
+        <tr>
+          <td>DIAMANTE 2</td>
+          <td class="text-center">{{ reporte.diamante_2 }}</td>
+          <td colspan="2" class="text-center">{{ reporte.diamante_2_observaciones }}</td>
+      </tr>
+
+      <tr>
+        <td>RETAMILLA DIA VISIBLE</td>
+        <td class="text-center">{{ reporte.retamilla_dia_visible }}</td>
+        <td colspan="2" class="text-center">{{ reporte.retamilla_dia_visible_observaciones }}</td>
+    </tr>
+
+    <tr>
+      <td>RETAMILLA NOCHE LUZ</td>
+      <td class="text-center">{{ reporte.retamilla_noche_luz }}</td>
+      <td colspan="2" class="text-center">{{ reporte.retamilla_noche_luz_observaciones }}</td>
+  </tr>
+
+  <tr>
+    <td>PTAS VISIBLE</td>
+    <td class="text-center">{{ reporte.ptas_visible }}</td>
+    <td colspan="2" class="text-center">{{ reporte.ptas_visible_observaciones }}</td>
+</tr>
+
+
+                <tr>
+                    <td>LOMAS</td>
+                    <td class="text-center">{{ reporte.lomas }}</td>
+                    <td colspan="2" class="text-center">{{ reporte.obs_lomas }}</td>
+                </tr>
+                <tr>
+                    <td>OTRAS(VERIFICAR)</td>
+                    <td class="text-center">{{ reporte.otras }}</td>
+                    <td colspan="2" class="text-center">{{ reporte.obs_otras }}</td>
+                </tr>
+                <thead>
+                  <tr class="bg-dark text-white">
+                    <th>OTRAS NOVEDADES</th>
+                    <th colspan="3">MAXIMO 1000 PALABRAS</th>
+                                                                                     
+                  </tr>
+                </thead>
+                <tr>
+                  <td>Otras Novedades</td>
+                  
+                  <td colspan="3" class="text-center">{{ reporte.otras_novedades }}</td>
+              </tr>
+
+                </tbody>
+              </table>
+              {% csrf_token %}
+              <input class="btn btn-success" type="submit" name="confirmar" value="Confirmar Reporte">
+              <input class="btn btn-danger" type="submit" name="volver" value="Atrás Editar">
+              </form>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+{% endblock %}

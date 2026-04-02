@@ -1,0 +1,122 @@
+{% extends 'base/base.html' %}
+{% load static %}
+<!-- Section-->
+{% block content %}
+
+<section class="page-section bg-light">
+    <div class="container"><br>
+        <h3 class="templatemo_pricing_title">Preguntas Frecuentes</h3><br>
+        <div class="row">
+            <div class="col-md-6">
+                <h3>Servicios Agua Potable</h3>
+                <div id="accordionAgua">
+                    {% for preg_agua in preguntas_agua %}
+                    <div class="accordion-item">
+                        {% with forloop.counter as itemId %}
+                        <div class="accordion-header" data-target="#agua{{ itemId }}">
+                            <button class="accordion-button">
+                                {{ preg_agua.pregunta }}
+                            </button>
+                        </div>
+                        <div class="accordion-body" id="agua{{ itemId }}" style="display: none;">
+                            {{ preg_agua.respuesta }}
+                        </div>
+                        {% endwith %}
+                    </div>
+                    {% endfor %}
+                </div>
+            </div>
+            <div class="col-md-6">
+                <h3>Servicios Energía Eléctrica</h3>
+                <div id="accordionEnergia">
+                    {% for preg_energ in preguntas_energia %}
+                    <div class="accordion-item">
+                        {% with forloop.counter as itemId %}
+                        <div class="accordion-header" data-target="#energia{{ itemId }}">
+                            <button class="accordion-button2">
+                                {{ preg_energ.pregunta }}
+                            </button>
+                        </div>
+                        <div class="accordion-body" id="energia{{ itemId }}" style="display: none;">
+                            {{ preg_energ.respuesta }}
+                        </div>
+                        {% endwith %}
+                    </div>
+                    {% endfor %}
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<script>
+// JavaScript for Accordion Behavior
+document.addEventListener('DOMContentLoaded', function () {
+    // Select all accordion headers
+    const headers = document.querySelectorAll('.accordion-header');
+
+    headers.forEach(header => {
+        header.addEventListener('click', function () {
+            const targetId = this.getAttribute('data-target');
+            const targetBody = document.querySelector(targetId);
+
+            // Toggle display of the associated body
+            if (targetBody.style.display === 'none' || targetBody.style.display === '') {
+                // Close all other open items
+                document.querySelectorAll('.accordion-body').forEach(body => {
+                    body.style.display = 'none';
+                });
+
+                // Open the clicked item
+                targetBody.style.display = 'block';
+            } else {
+                // Close the clicked item if it was open
+                targetBody.style.display = 'none';
+            }
+        });
+    });
+});
+</script>
+
+<style>
+/* Basic Styling */
+.container {
+    margin-top: 60px;
+}
+
+.accordion-item {
+    margin-bottom: 15px;    
+    border-radius: 1px;
+}
+
+.accordion-header {    
+    padding: 10px;
+    cursor: pointer;
+    font-size: 16px;
+    border-radius: 5px;
+}
+
+
+
+.accordion-body {
+    
+    padding: 10px;
+    font-size: 14px;
+    line-height: 1.5;
+    display: none;
+}
+
+.accordion-button {
+    background-color: #00119f;
+    width: 100%;
+    color: #f2ce18;
+}
+
+.accordion-button2 {
+    background-color: #f2ce18;
+    width: 100%;
+    color: #00119f;
+}
+</style>
+
+{% endblock %}

@@ -1,0 +1,35 @@
+{% extends 'base/base.html' %}
+{% load static %}
+
+{% block content %}
+<section class="page-section">
+    <div class="container">
+        <div class="row">
+            <div class="col-md-10 col-md-offset-1">
+                <div class="panel panel-default">
+                    <div class="panel-body">
+                        {% if noticia.imagen %}
+                        <img src="{{ noticia.imagen.url }}" alt="Noticia" class="img-responsive center-block" style="max-height: 460px; width: 100%; object-fit: cover;">
+                        {% else %}
+                        <img src="{% static 'images/66059.jpg' %}" alt="Noticia" class="img-responsive center-block" style="max-height: 460px; width: 100%; object-fit: cover;">
+                        {% endif %}
+
+                        <div class="text-center" style="margin-top: 1.5rem;">
+                            <h2 class="templatemo_pricing_title">{{ noticia.name }}</h2>
+                            <p class="text-muted">{{ noticia.date }}</p>
+                        </div>
+
+                        <div style="margin-top: 1rem;">
+                            <p style="line-height: 1.8;">{{ noticia.description }}</p>
+                        </div>
+
+                        <div class="text-center" style="margin-top: 1.5rem;">
+                            <a href="{% url 'noticias' %}" class="btn btn-primary">Volver a noticias</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+{% endblock %}

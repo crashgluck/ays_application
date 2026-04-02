@@ -1,0 +1,51 @@
+{% extends 'base/base.html' %}
+{% load static %}
+
+{% block content %}
+<section class="container py-4">
+    <div class="text-center" style="margin-bottom: 2rem;">
+        <h2 class="templatemo_pricing_title">Tarifas</h2>
+        <h3 class="text-muted">Informacion actualizada para clientes.</h3>
+    </div>
+
+    <div class="row">
+        <div class="col-md-6">
+            <div class="panel panel-default">
+                <div class="panel-heading">
+                    <h4 class="panel-title">Tarifas vigentes</h4>
+                </div>
+                <div class="panel-body">
+                    <div class="btn-group-vertical" style="width: 100%;">
+                        {% for tarifa in tarifas %}
+                        <a class="btn btn-info" style="margin-bottom: .5rem; white-space: normal;" href="{{ tarifa.archivo_pdf.url }}" target="_blank" rel="noopener">
+                            {{ tarifa.nombre }}
+                        </a>
+                        {% empty %}
+                        <div class="alert alert-info">No hay tarifas publicadas.</div>
+                        {% endfor %}
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-md-6">
+            <div class="panel panel-default">
+                <div class="panel-heading">
+                    <h4 class="panel-title">Condiciones y servicios</h4>
+                </div>
+                <div class="panel-body">
+                    <div class="btn-group-vertical" style="width: 100%;">
+                        {% for condicion in condiciones %}
+                        <a class="btn btn-warning" style="margin-bottom: .5rem; white-space: normal;" href="{{ condicion.archivo_pdf.url }}" target="_blank" rel="noopener">
+                            {{ condicion.nombre }}
+                        </a>
+                        {% empty %}
+                        <div class="alert alert-info">No hay documentos de condiciones publicados.</div>
+                        {% endfor %}
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+{% endblock %}
