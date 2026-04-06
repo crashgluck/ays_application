@@ -5,7 +5,7 @@
   <section class="mx-auto w-100 py-4 report-form-page" id="tarifario">
     <div class="container-fluid text-center">
         <div class="report-form-shell">
-          <form method="post" class="row py-4 px-2 report-form-grid" novalidate>
+          <form method="post" class="row py-4 px-2 report-form-grid" novalidate data-has-seed="{{ has_seed_data|yesno:'true,false' }}">
             {% csrf_token %}
             <h2 class="text-center mb-3">Crear reporte diario</h2>
             {% if form.non_field_errors or form.errors %}
@@ -23,35 +23,39 @@
               </ul>
             </div>
             {% endif %}
-            <p class="report-intro">
-              El formulario carga con los datos del <strong>ultimo reporte generado</strong>. Usa la barra por etapas para completar mas rapido y <strong>Limpiar Campos</strong> para comenzar desde cero.
-            </p>
+            <div class="report-intro-card">
+              <p class="report-intro">
+                Completa el reporte en etapas para avanzar mas rapido y con menos errores.
+              </p>
+              <div class="report-intro-meta">
+                {% if has_seed_data %}
+                <span class="badge badge-pill report-badge-prefill">Base precargada desde el ultimo reporte</span>
+                {% else %}
+                <span class="badge badge-pill report-badge-empty">Sin datos previos para precargar</span>
+                {% endif %}
+                <span class="badge badge-pill report-badge-edit" id="wizardChangeCounter">Cambios detectados: 0</span>
+              </div>
+            </div>
+
             <div class="text-start text-warning bg-dark report-guidelines">
-              <ul>
-                <li class="p-2"><h5>Guia rapida: completa cada etapa con <strong>Siguiente</strong>; en la ultima usa <strong>Ir a guardar</strong>.</h5></li>
-                <li class="p-2"><h5>Si hay error de validacion, el formulario abre automaticamente la etapa del campo faltante.</h5></li>
-                <li class="p-2"><h5><strong>RRHH</strong> ahora tiene tabla nueva con: Nombre, Medio/Lugar y Observacion por cargo.</h5></li>
-                <li class="p-2"><h5><strong>CCTV</strong> cambio a <strong>ALARMA UGPS ACTIVADA</strong>; por defecto queda "Todas apagadas".</h5></li>
-                <li class="p-2"><h5>Vehiculos comunidad actualizados: <strong>Movil 13, Movil 81 y Arriendo</strong>.</h5></li>
-                <li class="p-2"><h5>En <strong>Presiones</strong> se agrego <strong>GH</strong>; en balizas se agrego <strong>Sistema O</strong>.</h5></li>
-                <li class="p-2"><h5>Campos de conteo (Vuelos Drone, Accesos Externos, Accesos Ventas) aceptan solo numeros.</h5></li>
-                <li class="p-2"><h5>Observaciones y Otras novedades: deja en blanco si no hay novedades.</h5></li>
-              </ul>
+             
             </div>
 
             <div class="report-wizard-toolbar">
               <div class="report-wizard-meta">
                 <span id="wizardStepLabel">Etapa 1</span>
-                <span id="wizardProgressText">1/8</span>
+                <span id="wizardProgressText">1/7</span>
               </div>
               <div class="report-wizard-progress">
                 <div id="wizardProgressBar"></div>
               </div>
               <div id="wizardStepChips" class="report-wizard-chips"></div>
+              <div id="wizardSubChips" class="report-wizard-subchips" hidden></div>
               <div class="report-wizard-actions">
                 <button type="button" class="btn btn-default" id="wizardPrev">Anterior</button>
                 <button type="button" class="btn btn-primary" id="wizardNext">Siguiente</button>
-                <button type="button" class="btn btn-default" id="limpiarFormulario">Limpiar Campos</button>
+                <button type="button" class="btn btn-warning" id="limpiarEtapa">Limpiar etapa</button>
+                <button type="button" class="btn btn-default" id="limpiarFormulario">Reiniciar todo</button>
               </div>
             </div>
           
@@ -138,131 +142,6 @@
                 </tr>
                 <thead>
                   <tr>
-                    <th colspan="4" class="text-center py-3 text-light bg-dark">PERSONAL DE TURNO</th>
-                  </tr>
-                </thead>
-                <thead>
-                    <tr>
-                      <th>CARGO</th>
-                      <th colspan="2">NOMBRE</th>
-                      <th>MEDIO/LUGAR</th>
-                    </tr>
-                  </thead>
-                <tr>
-                  <td>Jefe semana</td>
-                  <td colspan="2" class="text-center">{{ form.jefe_semana }}</td>
-                  <td class="text-center">{{ form.ml_jefe_semana }}</td>
-
-                </tr>
-                <tr>
-                  <td>Administrador COM</td>
-                  <td colspan="2" class="text-center">{{ form.segundo_jefe }}</td>
-                  <td class="text-center">{{ form.ml_segundo_jefe }}</td>
-
-                </tr>
-                <tr>
-                  <td>Oficina AyS</td>
-                  <td colspan="2" class="text-center">{{ form.oficina_ays }}</td>
-                  <td class="text-center">{{ form.ml_oficina_ays }}</td>
-
-                </tr>
-                <tr>
-                  <td>ET alerta semana</td>
-                  <td colspan="2" class="text-center">{{ form.et_alerta_semana }}</td>
-                  <td class="text-center">{{ form.ml_et_alerta_semana }}</td>
-
-                </tr>
-                <tr>
-                  <td>Encargado de turno</td>
-                  <td colspan="2" class="text-center">{{ form.encargado_turno }}</td>
-                  <td class="text-center">{{ form.ml_encargado_turno }}</td>
-
-
-                </tr>
-                <tr>
-                  <td>Central</td>
-                  <td colspan="2" class="text-center">{{ form.central }}</td>
-                  <td class="text-center">{{ form.ml_central }}</td>
-
-
-                </tr>
-                <tr>
-                  <td>Guardia seguridad</td>
-                  <td colspan="2" class="text-center">{{ form.guardia_seguridad }}</td>
-                  <td class="text-center">{{ form.ml_guardia_seguridad }}</td>
-
-
-                </tr>
-                <tr>
-                  <td>Guardia seguridad 2</td>
-                  <td colspan="2" class="text-center">{{ form.guardia_seguridad2 }}</td>
-                  <td class="text-center">{{ form.ml_guardia_seguridad2 }}</td>
-
-
-                </tr>
-                <tr>
-                  <td>Guardia seguridad 3</td>
-                  <td colspan="2" class="text-center">{{ form.guardia_seguridad3 }}</td>
-                  <td class="text-center">{{ form.ml_guardia_seguridad3 }}</td>
-
-
-                </tr>
-                <tr>
-                  <td>Relacionador 1</td>
-                  <td colspan="2" class="text-center">{{ form.relacionador }}</td>
-                  <td class="text-center">{{ form.ml_relacionador}}</td>
-
-
-                </tr>
-                <tr>
-                  <td>Relacionador 2</td>
-                  <td colspan="2" class="text-center">{{ form.relacionador2 }}</td>
-                  <td class="text-center">{{ form.ml_relacionador2 }}</td>
-
-
-                </tr>
-
-                <tr>
-                  <td>Drone 1</td>
-                  <td colspan="2" class="text-center">{{ form.drone }}</td>
-                  <td class="text-center">{{ form.ml_drone }}</td>
-
-
-
-                </tr>
-                <tr>
-                  <td>Drone 2</td>
-                  <td colspan="2" class="text-center">{{ form.drone2 }}</td>
-                  <td class="text-center">{{ form.ml_drone2 }}</td>
-
-
-
-                </tr>
-                <tr>
-                  <td>Eq. TÃ©cnico 1</td>
-
-                  <td colspan="2" class="text-center">{{ form.eq_tecnico_1 }}</td>
-                  <td class="text-center">{{ form.ml_eq_tecnico_1}}</td>
-
-
-
-                </tr>
-                <tr>
-                  <td>Eq. TÃ©cnico 2</td>
-                  <td colspan="2" class="text-center">{{ form.eq_tecnico_2 }}</td>
-                  <td class="text-center">{{ form.ml_eq_tecnico_2 }}</td>
-
-                </tr>
-                <tr>
-                  <td>Brigada IF</td>
-                  <td colspan="2" class="text-center">{{ form.brigada_if }}</td>
-                  <td class="text-center">{{ form.ml_brigada_if }}</td>
-
-
-                </tr>
-
-                <thead>
-                  <tr>
                     <th colspan="4" class="text-center py-3 text-light bg-dark">RRHH (TABLA NUEVA)</th>
                   </tr>
                 </thead>
@@ -279,7 +158,7 @@
                   <td colspan="4" class="bg-dark text-light"><strong>{{ section.title }}</strong></td>
                 </tr>
                 {% for row in section.rows %}
-                <tr>
+                <tr class="rrhh-data-row">
                   <td>{{ row.label }}</td>
                   <td class="text-center">{{ form|field_from_name:row.nombre_field }}</td>
                   <td class="text-center">{{ form|field_from_name:row.medio_field }}</td>
@@ -439,23 +318,9 @@
 
                 </tr>
                 <tr>
-                  <td class="bg-dark text-light">ALARMA UGPS ACTIVADA</td>
-                  <td colspan="3">{{ form.indicar_cual_cctv }}</td>        
-                  
-
+                  <td class="bg-dark text-light">SISTEMA CCTV (OBSERVACION)</td>
+                  <td colspan="3">{{ form.indicar_cual_cctv }}</td>
                 </tr>
-                
-                
-                <tr>
-                  <td>CCTV SISTEMA O</td>
-                  <td class="text-center" colspan="3">{{ form.cctv_sistema_o }}</td>
-                  
-              </tr>
-                <tr>
-                  <td>OBSERVACIONES CCTV <small> (Dejar en blanco si no hay observaciones)</small></td>
-                  <td class="text-center" colspan="3">{{ form.observaciones }}</td>
-                  
-              </tr>
                 <tr>
                   <td class="bg-dark text-light">PORTONES</td>
                   
@@ -748,145 +613,7 @@
     </div>
 </section>
 {% block scripts %}
-<script>
-  document.addEventListener('DOMContentLoaded', function() {
-    var form = document.querySelector('form');
-    var table = document.getElementById('example');
-    var prevButton = document.getElementById('wizardPrev');
-    var nextButton = document.getElementById('wizardNext');
-    var clearButton = document.getElementById('limpiarFormulario');
-    var stepLabel = document.getElementById('wizardStepLabel');
-    var stepText = document.getElementById('wizardProgressText');
-    var progressBar = document.getElementById('wizardProgressBar');
-    var chipsContainer = document.getElementById('wizardStepChips');
-    var submitButton = form.querySelector('button[type="submit"]');
-
-    if (!form || !table) {
-      return;
-    }
-
-    var stepConfig = [
-      { label: 'Clima y Riesgos', markers: ['FECHA'] },
-      { label: 'Personal de Turno', markers: ['PERSONAL DE TURNO'] },
-      { label: 'RRHH', markers: ['RRHH (TABLA NUEVA)'] },
-      { label: 'Vehiculos', markers: ['VEHICULOS COMUNIDAD'] },
-      { label: 'Indicadores', markers: ['INDICADORES'] },
-      { label: 'Operativos', markers: ['OPERATIVOS'] },
-      { label: 'Presiones', markers: ['PRESIONES'] },
-      { label: 'Balizas y Novedades', markers: ['BALIZAS', 'OTRAS NOVEDADES'] }
-    ];
-
-    function normalizeText(value) {
-      return (value || '')
-        .normalize('NFD')
-        .replace(/[\u0300-\u036f]/g, '')
-        .toUpperCase()
-        .trim();
-    }
-
-    var rows = Array.from(table.querySelectorAll('tr'));
-    var currentStep = 0;
-    rows.forEach(function(row) {
-      var text = normalizeText(row.textContent);
-      var matched = stepConfig.findIndex(function(step) {
-        return step.markers.some(function(marker) {
-          return text.indexOf(marker) !== -1;
-        });
-      });
-      if (matched >= 0) {
-        currentStep = matched;
-      }
-      row.dataset.wizardStep = String(currentStep);
-    });
-
-    var totalSteps = stepConfig.length;
-    var stage = 0;
-
-    function renderChips() {
-      chipsContainer.innerHTML = '';
-      for (var i = 0; i < totalSteps; i++) {
-        var chip = document.createElement('button');
-        chip.type = 'button';
-        chip.className = 'report-wizard-chip';
-        chip.textContent = (i + 1) + '. ' + stepConfig[i].label;
-        chip.dataset.stepIndex = String(i);
-        chip.addEventListener('click', function(event) {
-          var target = Number(event.currentTarget.dataset.stepIndex);
-          showStep(target);
-        });
-        chipsContainer.appendChild(chip);
-      }
-    }
-
-    function updateChips(index) {
-      chipsContainer.querySelectorAll('.report-wizard-chip').forEach(function(chip) {
-        chip.classList.toggle('active', Number(chip.dataset.stepIndex) === index);
-      });
-    }
-
-    function showStep(index) {
-      stage = Math.max(0, Math.min(index, totalSteps - 1));
-      rows.forEach(function(row) {
-        row.hidden = Number(row.dataset.wizardStep) !== stage;
-      });
-      stepLabel.textContent = 'Etapa ' + (stage + 1) + ': ' + stepConfig[stage].label;
-      stepText.textContent = (stage + 1) + '/' + totalSteps;
-      progressBar.style.width = (((stage + 1) / totalSteps) * 100).toFixed(2) + '%';
-      prevButton.disabled = stage === 0;
-      nextButton.textContent = stage === totalSteps - 1 ? 'Ir a guardar' : 'Siguiente';
-      updateChips(stage);
-      table.scrollIntoView({ behavior: 'smooth', block: 'start' });
-    }
-
-    renderChips();
-
-    prevButton.addEventListener('click', function() {
-      showStep(stage - 1);
-    });
-
-    nextButton.addEventListener('click', function() {
-      if (stage === totalSteps - 1) {
-        submitButton.scrollIntoView({ behavior: 'smooth', block: 'center' });
-        submitButton.focus();
-        return;
-      }
-      showStep(stage + 1);
-    });
-
-    clearButton.addEventListener('click', function() {
-      var inputs = form.querySelectorAll('input, select, textarea');
-      inputs.forEach(function(input) {
-        if (input.type === 'hidden' || input.name === 'csrfmiddlewaretoken') {
-          return;
-        }
-        if (input.type === 'radio' || input.type === 'checkbox') {
-          input.checked = false;
-          return;
-        }
-        if (input.tagName.toLowerCase() === 'select') {
-          input.selectedIndex = 0;
-          return;
-        }
-        input.value = '';
-      });
-      var ugps = form.querySelector('input[name="indicar_cual_cctv"]');
-      if (ugps) {
-        ugps.value = 'Todas apagadas';
-      }
-      showStep(0);
-    });
-
-    var firstInvalidField = form.querySelector('.is-invalid');
-    if (firstInvalidField) {
-      var invalidRow = firstInvalidField.closest('tr');
-      if (invalidRow && invalidRow.dataset.wizardStep) {
-        showStep(Number(invalidRow.dataset.wizardStep));
-        return;
-      }
-    }
-    showStep(0);
-  });
-</script>
+<script src="{% static 'js/report-form.js' %}" defer></script>
 {% endblock %}
 
 {% endblock %}

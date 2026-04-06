@@ -21,6 +21,79 @@
     }).format(date);
   }
 
+  function weatherLabelFromCode(code) {
+    var map = {
+      0: 'Despejado',
+      1: 'Mayormente despejado',
+      2: 'Parcial nublado',
+      3: 'Nublado',
+      45: 'Neblina',
+      48: 'Neblina escarchada',
+      51: 'Llovizna ligera',
+      53: 'Llovizna moderada',
+      55: 'Llovizna intensa',
+      61: 'Lluvia ligera',
+      63: 'Lluvia moderada',
+      65: 'Lluvia intensa',
+      71: 'Nieve ligera',
+      73: 'Nieve moderada',
+      75: 'Nieve intensa',
+      80: 'Chubascos ligeros',
+      81: 'Chubascos moderados',
+      82: 'Chubascos intensos',
+      95: 'Tormenta electrica',
+      96: 'Tormenta con granizo',
+      99: 'Tormenta con granizo fuerte',
+    };
+    return map[code] || 'Sin dato';
+  }
+
+  async function fetchWeather(container) {
+    var source = container.getAttribute('data-weather-source') || 'https://api.open-meteo.com/v1/forecast';
+    var lat = container.getAttribute('data-weather-lat') || '-32.558';
+    var lon = container.getAttribute('data-weather-lon') || '-71.445';
+    var place = container.getAttribute('data-weather-label') || 'Zona';
+    var placeEl = container.querySelector('[data-indicator-value="weather-place"]');
+    var weatherEl = container.querySelector('[data-indicator-value="weather"]');
+
+    if (placeEl) {
+      placeEl.textContent = place;
+    }
+    if (!weatherEl) {
+      return;
+    }
+
+    var params = new URLSearchParams({
+      latitude: lat,
+      longitude: lon,
+      current: 'temperature_2m,weather_code',
+      timezone: 'America/Santiago',
+    });
+
+    var response = await fetch(source + '?' + params.toString(), {
+      method: 'GET',
+      cache: 'no-store',
+    });
+    if (!response.ok) {
+      throw new Error('Weather HTTP ' + response.status);
+    }
+
+    var payload = await response.json();
+    var current = payload.current || {};
+    var temperature = typeof current.temperature_2m === 'number'
+      ? Math.round(current.temperature_2m)
+      : null;
+    var weatherCode = typeof current.weather_code === 'number' ? current.weather_code : null;
+    var label = weatherLabelFromCode(weatherCode);
+
+    if (temperature === null) {
+      weatherEl.textContent = 'No disponible';
+      return;
+    }
+
+    weatherEl.textContent = temperature + '°C · ' + label;
+  }
+
   async function fetchIndicators(container) {
     var statusEl = document.getElementById('indicatorStatus');
     var errorEl = document.getElementById('indicatorError');
@@ -90,5 +163,12 @@
       return;
     }
     fetchIndicators(container);
+    fetchWeather(container).catch(function (error) {
+      var weatherEl = container.querySelector('[data-indicator-value="weather"]');
+      if (weatherEl) {
+        weatherEl.textContent = 'No disponible';
+      }
+      console.error('Error cargando clima:', error);
+    });
   });
 })();

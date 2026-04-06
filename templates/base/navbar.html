@@ -1,12 +1,22 @@
 ﻿{% load static %}
 
 <header class="site-header">
-    <div class="site-market-bar" id="market-indicators" aria-live="polite" data-source="https://mindicador.cl/api">
+    <div
+        class="site-market-bar"
+        id="market-indicators"
+        aria-live="polite"
+        data-source="https://mindicador.cl/api"
+        data-weather-source="https://api.open-meteo.com/v1/forecast"
+        data-weather-lat="-32.558"
+        data-weather-lon="-71.445"
+        data-weather-label="Catapilco"
+    >
         <div class="container site-market-bar-inner">
             <div class="site-market-items">
                 <span class="site-market-item">UF: <strong data-indicator-value="uf">--</strong></span>
                 <span class="site-market-item">Dolar: <strong data-indicator-value="dolar">--</strong></span>
                 <span class="site-market-item">UTM: <strong data-indicator-value="utm">--</strong></span>
+                <span class="site-market-item">Clima <span data-indicator-value="weather-place">Catapilco</span>: <strong data-indicator-value="weather">--</strong></span>
             </div>
             <small class="site-market-status" id="indicatorStatus">Cargando indicadores...</small>
             <small class="site-market-error hidden" id="indicatorError">Indicadores no disponibles.</small>

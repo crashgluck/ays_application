@@ -115,3 +115,10 @@ def build_rrhh_sections(payload: Any) -> list[dict[str, Any]]:
             )
         sections.append({"title": section["title"], "rows": rows})
     return sections
+
+
+def get_rrhh_nombre(payload: Any, row_key: str) -> str:
+    """Devuelve el nombre de una fila RRHH de forma segura para usar en vistas/reportes."""
+    normalized = normalize_rrhh_payload(payload)
+    value = normalized.get(row_key, {})
+    return _clean(value.get("nombre"))

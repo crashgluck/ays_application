@@ -1,3 +1,5 @@
+import re
+
 from django import forms
 
 from .models import Reporte
@@ -32,8 +34,8 @@ OPCIONES_ML = [
     ("ET TURNO", "ET TURNO"),
     ("LLAMADO", "LLAMADO"),
     ("MOVIL 13", "MOVIL 13"),
-    ("MOVIL 81", "MOVIL 81"),
-    ("ARRIENDO", "ARRIENDO"),
+    ("MOVIL 14", "MOVIL 14"),
+    ("MOVIL 11", "MOVIL 11"),
     ("DSFK (CHINA)", "DSFK (CHINA)"),
     ("P NORTE", "P NORTE"),
     ("P. GHR", "P. GHR"),
@@ -46,6 +48,13 @@ OPCIONES_ML = [
     ("Cuartel 2", "Cuartel 2"),
     ("Torre Q", "Torre Q"),
     ("Otro", "Otro"),
+]
+
+RRHH_ML_CHOICES = [("", "Seleccione")] + OPCIONES_ML
+RRHH_PRESENCE_CHOICES = [
+    ("", "Seleccione"),
+    ("PRESENTE", "PRESENTE"),
+    ("AUSENTE", "AUSENTE"),
 ]
 
 OPTIONS2 = [
@@ -91,6 +100,11 @@ class ReportForm(forms.ModelForm):
         "accesos_extern_turn",
         "accesos_ventas_dia",
     )
+    SENTENCE_CASE_FIELDS = {
+        "observaciones",
+        "otras_novedades",
+        "indicar_cual_cctv",
+    }
 
     temperatura = forms.CharField(label="Temperatura", required=False)
     viento = forms.CharField(label="Viento", required=False)
@@ -214,20 +228,13 @@ class ReportForm(forms.ModelForm):
 
     indicar_cual_cctv = forms.CharField(
         required=False,
-        label="ALARMA UGPS ACTIVADA",
-        initial="Todas apagadas",
-        widget=forms.TextInput(attrs={"placeholder": "Todas apagadas"}),
-    )
-    cctv_sistema_o = forms.ChoiceField(
-        choices=OPTIONS3,
-        widget=forms.RadioSelect(),
-        label="CCTV SISTEMA O",
-        required=False,
+        label="SISTEMA CCTV (OBSERVACION)",
+        widget=forms.TextInput(attrs={"placeholder": "Escribe observacion CCTV"}),
     )
     observaciones = forms.CharField(
         required=False,
         widget=forms.Textarea(attrs={"rows": 3}),
-        help_text="Indica observaciones de CCTV (incluye Sistema O si aplica).",
+        help_text="Observaciones generales (opcional).",
     )
 
     vuelos_drone = forms.IntegerField(label="VUELOS DRONE DIA", required=False)
@@ -358,19 +365,39 @@ class ReportForm(forms.ModelForm):
                 row_data = rrhh_payload.get(row_key, {})
 
                 self.fields[nombre_field] = forms.CharField(required=False, label="Nombre")
-                self.fields[medio_field] = forms.CharField(required=False, label="Medio/Lugar")
-                self.fields[observacion_field] = forms.CharField(
+                self.fields[medio_field] = forms.ChoiceField(
                     required=False,
-                    label="Observacion",
-                    widget=forms.TextInput(),
+                    label="Medio/Lugar",
+                    choices=RRHH_ML_CHOICES,
                 )
+                if row_key.startswith("equipo_tecnico_"):
+                    self.fields[observacion_field] = forms.ChoiceField(
+                        required=False,
+                        label="Estado",
+                        choices=RRHH_PRESENCE_CHOICES,
+                    )
+                else:
+                    self.fields[observacion_field] = forms.CharField(
+                        required=False,
+                        label="Observacion",
+                        widget=forms.TextInput(),
+                    )
 
                 if not self.is_bound:
                     self.fields[nombre_field].initial = row_data.get("nombre", "")
-                    self.fields[medio_field].initial = row_data.get(
-                        "medio", row.get("medio_default", "")
+                    current_ml = row_data.get("medio", row.get("medio_default", ""))
+                    valid_values = {choice[0] for choice in RRHH_ML_CHOICES}
+                    self.fields[medio_field].initial = (
+                        current_ml if current_ml in valid_values else ""
                     )
-                    self.fields[observacion_field].initial = row_data.get("observacion", "")
+                    current_observacion = row_data.get("observacion", "")
+                    if row_key.startswith("equipo_tecnico_"):
+                        valid_presence_values = {choice[0] for choice in RRHH_PRESENCE_CHOICES}
+                        self.fields[observacion_field].initial = (
+                            current_observacion if current_observacion in valid_presence_values else ""
+                        )
+                    else:
+                        self.fields[observacion_field].initial = current_observacion
 
                 section_rows.append(
                     {
@@ -385,6 +412,19 @@ class ReportForm(forms.ModelForm):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
         self._build_rrhh_dynamic_fields()
+        numeric_help = {
+            "movil_13_odometro": "KMS",
+            "movil_11_odometro": "KMS",
+            "movil_14_odometro": "KMS",
+            "vuelos_drone": "Cantidad",
+            "accesos_extern_turn": "Cantidad",
+            "accesos_ventas_dia": "Cantidad",
+        }
+        # Legacy "ml_*" fields are no longer rendered in the new UI flow.
+        # Keep them non-required to avoid false validation errors.
+        for field_name in list(self.fields.keys()):
+            if field_name.startswith("ml_"):
+                self.fields[field_name].required = False
 
         for field_name, field in self.fields.items():
             widget = field.widget
@@ -393,25 +433,30 @@ class ReportForm(forms.ModelForm):
                 widget.attrs["class"] = (existing + " is-invalid").strip()
 
             if isinstance(widget, forms.RadioSelect):
-                widget.attrs.setdefault("class", "radio-list")
+                widget.attrs.setdefault("class", "radio-list radio-list-compact")
                 continue
             if isinstance(widget, forms.Select):
                 widget.attrs.setdefault("class", "form-control input-sm")
+                widget.attrs.setdefault("autocomplete", "off")
                 continue
             if isinstance(widget, forms.Textarea):
                 widget.attrs.setdefault("class", "form-control")
                 widget.attrs.setdefault("placeholder", "Opcional")
+                widget.attrs.setdefault("rows", "2")
                 continue
             widget.attrs.setdefault("class", "form-control input-sm")
             if isinstance(widget, forms.NumberInput):
                 widget.attrs.setdefault("min", "0")
+                widget.attrs.setdefault("step", "1")
+                widget.attrs.setdefault("inputmode", "numeric")
+                widget.attrs.setdefault("pattern", r"[0-9]*")
+                widget.attrs.setdefault("placeholder", numeric_help.get(field_name, "0"))
             if not field.required:
                 widget.attrs.setdefault("placeholder", "Opcional")
+            widget.attrs.setdefault("autocomplete", "off")
 
-        self.fields["observaciones"].widget.attrs["placeholder"] = (
-            "Observaciones CCTV (ej: Sistema O sin imagen)."
-        )
-        self.fields["indicar_cual_cctv"].widget.attrs["placeholder"] = "Todas apagadas"
+        self.fields["observaciones"].widget.attrs["placeholder"] = "Observaciones generales"
+        self.fields["indicar_cual_cctv"].widget.attrs["placeholder"] = "Escribe observacion CCTV"
 
     def clean(self):
         cleaned_data = super().clean()
@@ -421,14 +466,44 @@ class ReportForm(forms.ModelForm):
             if value is not None and value < 0:
                 self.add_error(field_name, "Este valor no puede ser negativo.")
 
-        if not cleaned_data.get("indicar_cual_cctv"):
-            cleaned_data["indicar_cual_cctv"] = "Todas apagadas"
-
         for field_name, value in cleaned_data.items():
-            if isinstance(value, str):
-                cleaned_data[field_name] = value.strip()
+            if not isinstance(value, str):
+                continue
+            compact_value = self._compact_whitespace(value)
+            if self._should_uppercase(field_name):
+                cleaned_data[field_name] = compact_value.upper()
+            elif self._should_sentence_case(field_name):
+                cleaned_data[field_name] = self._sentence_case(compact_value)
+            else:
+                cleaned_data[field_name] = compact_value
 
         return cleaned_data
+
+    @staticmethod
+    def _compact_whitespace(value: str) -> str:
+        return re.sub(r"\s+", " ", value).strip()
+
+    @staticmethod
+    def _sentence_case(value: str) -> str:
+        if not value:
+            return value
+        return value[0].upper() + value[1:]
+
+    @staticmethod
+    def _is_rrhh_field(field_name: str) -> bool:
+        return field_name.startswith("rrhh_")
+
+    def _should_uppercase(self, field_name: str) -> bool:
+        if self._is_rrhh_field(field_name) and field_name.endswith("_nombre"):
+            return True
+        return field_name in {"central", "jefe_semana"}
+
+    def _should_sentence_case(self, field_name: str) -> bool:
+        if self._is_rrhh_field(field_name) and field_name.endswith("_observacion"):
+            return True
+        if field_name.startswith("obs_") or field_name.endswith("_observaciones"):
+            return True
+        return field_name in self.SENTENCE_CASE_FIELDS
 
     def save(self, commit=True):
         instance = super().save(commit=False)
@@ -444,6 +519,12 @@ class ReportForm(forms.ModelForm):
             }
 
         instance.rrhh_registros = rrhh_payload
+        # Keep legacy summary fields in sync with RRHH so report list columns
+        # (Operador Central / Jefe de turno) are not left empty.
+        central_manual = (self.cleaned_data.get("central") or "").strip()
+        jefe_manual = (self.cleaned_data.get("jefe_semana") or "").strip()
+        instance.central = central_manual or rrhh_payload.get("central", {}).get("nombre", "")
+        instance.jefe_semana = jefe_manual or rrhh_payload.get("jefe_semana", {}).get("nombre", "")
 
         if commit:
             instance.save()

@@ -9,10 +9,19 @@ from django.shortcuts import get_object_or_404, redirect, render
 
 from .forms import ReportForm
 from .models import Reporte
-from .rrhh import build_rrhh_sections
+from .rrhh import build_rrhh_sections, get_rrhh_nombre
 from .services import send_report_email
 
 logger = logging.getLogger(__name__)
+
+
+def _report_contacts(reporte):
+    operador = ((reporte.central or "").strip() or get_rrhh_nombre(reporte.rrhh_registros, "central"))
+    jefe = (
+        (reporte.jefe_semana or "").strip()
+        or get_rrhh_nombre(reporte.rrhh_registros, "jefe_semana")
+    )
+    return operador, jefe
 
 
 @login_required
@@ -29,14 +38,29 @@ def enviar_reporte(request):
     else:
         form = ReportForm(instance=ultimo_reporte)
 
-    return render(request, "reportes/enviar_reporte.html", {"form": form})
+    return render(
+        request,
+        "reportes/enviar_reporte.html",
+        {"form": form, "has_seed_data": bool(ultimo_reporte)},
+    )
 
 
 @login_required
 def guardar_reporte(request, reporte_id):
     reporte = get_object_or_404(Reporte, pk=reporte_id)
+    operador_display, jefe_display = _report_contacts(reporte)
 
     if request.method == "POST":
+        if "editar" in request.POST:
+            messages.info(
+                request,
+                (
+                    "Regresaste a crear reporte sin eliminar el borrador. "
+                    "El ultimo reporte quedara como base para completar los cambios."
+                ),
+            )
+            return redirect("enviar_reporte")
+
         if "volver" in request.POST:
             reporte.delete()
             messages.info(request, "Borrador eliminado. Puedes crear el reporte nuevamente.")
@@ -57,6 +81,8 @@ def guardar_reporte(request, reporte_id):
                     {
                         "reporte": reporte,
                         "rrhh_sections": build_rrhh_sections(reporte.rrhh_registros),
+                        "operador_display": operador_display,
+                        "jefe_display": jefe_display,
                     },
                 )
 
@@ -68,17 +94,28 @@ def guardar_reporte(request, reporte_id):
     return render(
         request,
         "reportes/guardar-reporte.html",
-        {"reporte": reporte, "rrhh_sections": build_rrhh_sections(reporte.rrhh_registros)},
+        {
+            "reporte": reporte,
+            "rrhh_sections": build_rrhh_sections(reporte.rrhh_registros),
+            "operador_display": operador_display,
+            "jefe_display": jefe_display,
+        },
     )
 
 
 @login_required
 def ver_reporte(request, reporte_id):
     reporte = get_object_or_404(Reporte, pk=reporte_id)
+    operador_display, jefe_display = _report_contacts(reporte)
     return render(
         request,
         "reportes/ver-reportes.html",
-        {"reporte": reporte, "rrhh_sections": build_rrhh_sections(reporte.rrhh_registros)},
+        {
+            "reporte": reporte,
+            "rrhh_sections": build_rrhh_sections(reporte.rrhh_registros),
+            "operador_display": operador_display,
+            "jefe_display": jefe_display,
+        },
     )
 
 
@@ -90,11 +127,20 @@ def report_success(request):
 @login_required
 def report_views(request):
     reportes_qs = (
-        Reporte.objects.only("id", "fecha_hora", "central", "jefe_semana", "confirmado")
+        Reporte.objects.only(
+            "id",
+            "fecha_hora",
+            "central",
+            "jefe_semana",
+            "rrhh_registros",
+            "confirmado",
+        )
         .order_by("-id")
     )
     paginator = Paginator(reportes_qs, 20)
     page_obj = paginator.get_page(request.GET.get("page"))
+    for reporte in page_obj.object_list:
+        reporte.operador_display, reporte.jefe_display = _report_contacts(reporte)
     return render(
         request,
         "reportes/report-views.html",

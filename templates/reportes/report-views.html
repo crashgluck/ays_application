@@ -32,8 +32,8 @@
                     <tr>
                         <td>{{ reporte.id }}</td>
                         <td>{{ reporte.fecha_hora|date:"d/m/Y" }} - {{ reporte.fecha_hora|time:"H:i" }}</td>
-                        <td>{{ reporte.central|upper }}</td>
-                        <td>{{ reporte.jefe_semana|upper }}</td>
+                        <td>{{ reporte.operador_display|upper }}</td>
+                        <td>{{ reporte.jefe_display|upper }}</td>
                         <td>
                             {% if reporte.confirmado %}
                             <span class="label label-success">Enviado</span>
