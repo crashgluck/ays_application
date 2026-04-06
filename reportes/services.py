@@ -4,10 +4,16 @@ from django.conf import settings
 from django.core.mail import EmailMultiAlternatives
 from django.template.loader import render_to_string
 
-from .rrhh import build_rrhh_sections, get_rrhh_nombre
+from .rrhh import build_rrhh_sections
 
 DEFAULT_REPORT_RECIPIENTS = [
-    "seguridad@forestadezapallar.cl"
+    "Carlos@forestadezapallar.cl",
+    "jaraquemada.julio@gmail.com",
+    "maria.jose@forestadezapallar.cl",
+    "p.romero@forestadezapallar.cl",
+    "seguridad@forestadezapallar.cl",
+    "obrasforesta@forestadezapallar.cl",
+    "operaciones@forestadezapallar.cl",
 ]
 
 
@@ -21,21 +27,9 @@ def get_report_recipients():
 
 
 def send_report_email(reporte):
-    operador_display = (
-        (reporte.central or "").strip() or get_rrhh_nombre(reporte.rrhh_registros, "central")
-    )
-    jefe_display = (
-        (reporte.jefe_semana or "").strip()
-        or get_rrhh_nombre(reporte.rrhh_registros, "jefe_semana")
-    )
     html_content = render_to_string(
         "reportes/ver-reportes.html",
-        {
-            "reporte": reporte,
-            "rrhh_sections": build_rrhh_sections(reporte.rrhh_registros),
-            "operador_display": operador_display,
-            "jefe_display": jefe_display,
-        },
+        {"reporte": reporte, "rrhh_sections": build_rrhh_sections(reporte.rrhh_registros)},
     )
     email = EmailMultiAlternatives(
         subject="Reporte de Central generado",
