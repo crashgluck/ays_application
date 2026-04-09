@@ -6,7 +6,7 @@ from typing import Any
 
 RRHH_SECTIONS = [
     {
-        "title": "RRHH GENERAL",
+        "title": "TURNO ALERTA",
         "rows": [
             {"key": "gerente_operaciones", "label": "GERENTE OPERACIONES", "medio_default": "OPS"},
             {"key": "jefe_semana", "label": "JEFE DE SEMANA", "medio_default": "LLAMADO"},
@@ -40,6 +40,9 @@ RRHH_SECTIONS = [
         "rows": [
             {"key": "supervisor", "label": "SUPERVISOR", "medio_default": "OPS"},
             {"key": "administrativo", "label": "ADMINISTRATIVO", "medio_default": "OPS"},
+            {"key": "jornal_ays_1", "label": "JORNAL 1", "medio_default": "TERRENO"},
+            {"key": "jornal_ays_2", "label": "JORNAL 2", "medio_default": "TERRENO"},
+            {"key": "jornal_ays_3", "label": "JORNAL 3", "medio_default": "TERRENO"},
             {"key": "equipo_tecnico_1", "label": "EQUIPO TECNICO 1", "medio_default": "TURNO"},
             {"key": "equipo_tecnico_2", "label": "EQUIPO TECNICO 2", "medio_default": "TURNO"},
             {"key": "equipo_tecnico_3", "label": "EQUIPO TECNICO 3", "medio_default": "TURNO"},

@@ -100,21 +100,19 @@
                     <td class="text-center">-</td>                    
                   </tr>
                   <thead>
-                    <tr>
-                      <th colspan="4" class="text-center py-3 text-light bg-dark">RRHH (TABLA NUEVA)</th>
-                    </tr>
-                  </thead>
-                  <thead>
-                    <tr>
-                      <th>CARGO</th>
-                      <th>NOMBRE</th>
-                      <th>MEDIO/LUGAR</th>
-                      <th>OBSERVACION</th>
-                    </tr>
+                 
                   </thead>
                   {% for section in rrhh_sections %}
+                  {% if not forloop.first %}
                   <tr>
                     <td colspan="4" class="bg-dark text-light"><strong>{{ section.title }}</strong></td>
+                  </tr>
+                  {% endif %}
+                  <tr class="active">
+                    <th>CARGO</th>
+                    <th>NOMBRE</th>
+                    <th>MEDIO/LUGAR</th>
+                    <th>OBSERVACION</th>
                   </tr>
                   {% for row in section.rows %}
                   <tr>
@@ -289,7 +287,7 @@
                     
                   </tr>
                   <tr>
-                    <td class="bg-dark text-light">SISTEMA CCTV (OBSERVACION)</td>
+                    <td class="bg-dark text-light">SISTEMA ATLAS/GPS</td>
                     <td class="text-center" colspan="3">{{ reporte.indicar_cual_cctv }}</td>
                   </tr>
 
@@ -393,7 +391,6 @@
   
                       </tr>
                     </thead>
-                    
                   <tr>
                     
 
@@ -451,8 +448,13 @@
                   
 
                   <thead>
-                    <tr class="bg-dark text-white">
-                      <th>BALIZAS (indique cual encendida)</th>
+                    <tr>
+                      <th colspan="4" class="text-center py-3 text-light bg-dark">BALIZAS Y SISTEMA CCTV</th>
+                    </tr>
+                  </thead>
+                  <thead>
+                    <tr>
+                      <th>BALIZAS</th>
                       <th>ON/OFF</th>
                       <th colspan="2">OBSERVACIONES</th>                                                                   
                     </tr>
@@ -493,9 +495,14 @@
                     <td colspan="2" class="text-center">{{ reporte.obs_mestiza_belloto }}</td>
                 </tr>
                 <tr>
-                    <td>ELEVADORA GH</td>
+                    <td>PORTAL GH</td>
                     <td class="text-center">{{ reporte.elevadora_gh }}</td>
                     <td colspan="2" class="text-center">{{ reporte.obs_elevadora_gh }}</td>
+                </tr>
+                <tr>
+                    <td>LOMAS ACCESO</td>
+                    <td class="text-center">{{ reporte.lomas_acceso }}</td>
+                    <td colspan="2" class="text-center">{{ reporte.obs_lomas_acceso }}</td>
                 </tr>
                 <tr>
                     <td>SISTEMA O</td>

@@ -33,6 +33,12 @@ OPCIONES_ML = [
     ("CENTRAL", "CENTRAL"),
     ("ET TURNO", "ET TURNO"),
     ("LLAMADO", "LLAMADO"),
+    ("OPERACIONES", "OPERACIONES"),
+    ("TERRENO", "TERRENO"),
+    ("LICENCIA", "LICENCIA"),
+    ("VACACIONES", "VACACIONES"),
+    ("PERMISO", "PERMISO"),
+    ("LIBRE", "LIBRE"),
     ("MOVIL 13", "MOVIL 13"),
     ("MOVIL 14", "MOVIL 14"),
     ("MOVIL 11", "MOVIL 11"),
@@ -50,7 +56,65 @@ OPCIONES_ML = [
     ("Otro", "Otro"),
 ]
 
-RRHH_ML_CHOICES = [("", "Seleccione")] + OPCIONES_ML
+RRHH_ML_CHOICES = [
+    ("", "Seleccione"),
+    (
+        "Instalaciones",
+        [
+            ("CENTRAL", "CENTRAL"),            
+            ("OPERACIONES", "OPERACIONES"),
+            ("TERRENO", "TERRENO"),
+            ("CLUB 1 - OF ADM", "CLUB 1 - OF ADM"),
+            ("CLUB 2", "CLUB 2"),
+            ("Cuartel 2", "Cuartel 2"),
+        ],
+    ),
+    (
+        "Disponibilidad",
+        [   
+            ("ET TURNO", "ET TURNO"),
+            ("LLAMADO", "LLAMADO"),
+            ("LICENCIA", "LICENCIA"),
+            ("VACACIONES", "VACACIONES"),
+            ("PERMISO", "PERMISO"),
+            ("LIBRE", "LIBRE"),
+        ],
+    ),
+    (
+        "Moviles",
+        [
+            ("MOVIL 13", "MOVIL 13"),
+            ("MOVIL 14", "MOVIL 14"),
+            ("MOVIL 11", "MOVIL 11"),
+            ("DSFK (CHINA)", "DSFK (CHINA)"),
+        ],
+    ),
+    (
+        "Portales",
+        [
+            ("P NORTE", "P NORTE"),
+            ("P. GHR", "P. GHR"),
+            ("P SUR", "P SUR"),
+        ],
+    ),
+    (
+        "Torres",
+        [
+            ("TORRE X", "TORRE X"),
+            ("TORRE 10", "TORRE 10"),
+            ("TORRE Y", "TORRE Y"),
+            ("TORRE Q", "Torre Q"),
+        ],
+    ),
+    
+    (
+        "Otros",
+        [
+            
+            ("Otro", "Otro"),
+        ],
+    ),
+]
 RRHH_PRESENCE_CHOICES = [
     ("", "Seleccione"),
     ("PRESENTE", "PRESENTE"),
@@ -74,22 +138,18 @@ OPTIONS4 = [
     ("CERRADO", "CERRADO"),
 ]
 
-OPTIONS5 = [
-    ("0", "0"),
-    ("1", "1"),
-    ("2", "2"),
-    ("3", "3"),
-    ("4", "4"),
-    ("5", "5"),
-    ("Sin Vision", "Sin Vision"),
-]
-
 OPTIONS6 = [
     ("Fuera de servicio", "Fuera de servicio"),
     ("Operativo", "Operativo"),
     ("En reparacion", "En reparacion"),
 ]
 
+CCTV_SYSTEM_CHOICES = [
+    ("", "Seleccione"),
+    ("OPERATIVO", "OPERATIVO"),
+    ("DISPONIBLE", "DISPONIBLE"),
+    ("SOLO LOCAL", "SOLO LOCAL"),
+]
 
 class ReportForm(forms.ModelForm):
     NON_NEGATIVE_FIELDS = (
@@ -226,10 +286,10 @@ class ReportForm(forms.ModelForm):
         choices=OPTIONS2, widget=forms.RadioSelect(), label="INVERSOR LOMAS (DER)"
     )
 
-    indicar_cual_cctv = forms.CharField(
+    indicar_cual_cctv = forms.ChoiceField(
+        choices=CCTV_SYSTEM_CHOICES,
         required=False,
-        label="SISTEMA CCTV (OBSERVACION)",
-        widget=forms.TextInput(attrs={"placeholder": "Escribe observacion CCTV"}),
+        label="SISTEMA ATLAS/GPS",
     )
     observaciones = forms.CharField(
         required=False,
@@ -249,6 +309,7 @@ class ReportForm(forms.ModelForm):
     estanques_x = forms.ChoiceField(choices=OPTIONS3, widget=forms.RadioSelect(), required=False)
     mestiza_belloto = forms.ChoiceField(choices=OPTIONS3, widget=forms.RadioSelect(), required=False)
     elevadora_gh = forms.ChoiceField(choices=OPTIONS3, widget=forms.RadioSelect(), required=False)
+    lomas_acceso = forms.ChoiceField(choices=OPTIONS3, widget=forms.RadioSelect(), required=False)
     lomas = forms.ChoiceField(choices=OPTIONS3, widget=forms.RadioSelect(), required=False)
 
     pozo_ch1 = forms.ChoiceField(choices=OPTIONS3, widget=forms.RadioSelect(), required=False)
@@ -294,6 +355,7 @@ class ReportForm(forms.ModelForm):
     obs_estanques_x = forms.CharField(max_length=100, label="OBSERVACIONES", required=False)
     obs_mestiza_belloto = forms.CharField(max_length=100, label="OBSERVACIONES", required=False)
     obs_elevadora_gh = forms.CharField(max_length=100, label="OBSERVACIONES", required=False)
+    obs_lomas_acceso = forms.CharField(max_length=100, label="OBSERVACIONES", required=False)
     sistema_o = forms.ChoiceField(choices=OPTIONS3, widget=forms.RadioSelect(), required=False)
     obs_sistema_o = forms.CharField(max_length=100, label="OBSERVACIONES", required=False)
     obs_lomas = forms.CharField(max_length=100, label="OBSERVACIONES", required=False)
@@ -315,12 +377,48 @@ class ReportForm(forms.ModelForm):
     porton_norte_observaciones = forms.CharField(max_length=250, required=False)
     sala_mestiza_observaciones = forms.CharField(max_length=250, required=False)
 
-    presion_lomas = forms.ChoiceField(choices=OPTIONS5, widget=forms.RadioSelect(), label="Presion Lomas")
-    presion_gh = forms.ChoiceField(choices=OPTIONS5, widget=forms.RadioSelect(), label="Presion GH")
-    sm_ch2 = forms.ChoiceField(choices=OPTIONS5, widget=forms.RadioSelect(), label="SM CH2")
-    sm_3 = forms.ChoiceField(choices=OPTIONS5, widget=forms.RadioSelect(), label="SM 3")
-    sm_1 = forms.ChoiceField(choices=OPTIONS5, widget=forms.RadioSelect(), label="SM 1")
-    torre_y = forms.ChoiceField(choices=OPTIONS5, widget=forms.RadioSelect(), label="TORRE Y")
+    presion_lomas = forms.FloatField(
+        label="Presion Lomas",
+        required=False,
+        min_value=0,
+        max_value=8,
+        widget=forms.NumberInput(attrs={"step": "0.1", "min": "0", "max": "8", "inputmode": "decimal"}),
+    )
+    presion_gh = forms.FloatField(
+        label="Presion GH",
+        required=False,
+        min_value=0,
+        max_value=8,
+        widget=forms.NumberInput(attrs={"step": "0.1", "min": "0", "max": "8", "inputmode": "decimal"}),
+    )
+    sm_ch2 = forms.FloatField(
+        label="SM CH2",
+        required=False,
+        min_value=0,
+        max_value=8,
+        widget=forms.NumberInput(attrs={"step": "0.1", "min": "0", "max": "8", "inputmode": "decimal"}),
+    )
+    sm_3 = forms.FloatField(
+        label="SM 3",
+        required=False,
+        min_value=0,
+        max_value=8,
+        widget=forms.NumberInput(attrs={"step": "0.1", "min": "0", "max": "8", "inputmode": "decimal"}),
+    )
+    sm_1 = forms.FloatField(
+        label="SM 1",
+        required=False,
+        min_value=0,
+        max_value=8,
+        widget=forms.NumberInput(attrs={"step": "0.1", "min": "0", "max": "8", "inputmode": "decimal"}),
+    )
+    torre_y = forms.FloatField(
+        label="TORRE Y",
+        required=False,
+        min_value=0,
+        max_value=8,
+        widget=forms.NumberInput(attrs={"step": "0.1", "min": "0", "max": "8", "inputmode": "decimal"}),
+    )
 
     presion_lomas_obs = forms.CharField(max_length=250, required=False)
     presion_gh_obs = forms.CharField(max_length=250, required=False)
@@ -352,6 +450,21 @@ class ReportForm(forms.ModelForm):
             f"rrhh_{row_key}_medio",
             f"rrhh_{row_key}_observacion",
         )
+
+    @staticmethod
+    def _choice_values(choices):
+        values = set()
+        for choice in choices:
+            if not isinstance(choice, (list, tuple)) or len(choice) < 2:
+                continue
+            value, label = choice[0], choice[1]
+            if isinstance(label, (list, tuple)):
+                for opt in label:
+                    if isinstance(opt, (list, tuple)) and opt:
+                        values.add(opt[0])
+            else:
+                values.add(value)
+        return values
 
     def _build_rrhh_dynamic_fields(self):
         rrhh_payload = normalize_rrhh_payload(getattr(self.instance, "rrhh_registros", None))
@@ -386,7 +499,7 @@ class ReportForm(forms.ModelForm):
                 if not self.is_bound:
                     self.fields[nombre_field].initial = row_data.get("nombre", "")
                     current_ml = row_data.get("medio", row.get("medio_default", ""))
-                    valid_values = {choice[0] for choice in RRHH_ML_CHOICES}
+                    valid_values = self._choice_values(RRHH_ML_CHOICES)
                     self.fields[medio_field].initial = (
                         current_ml if current_ml in valid_values else ""
                     )
@@ -456,8 +569,6 @@ class ReportForm(forms.ModelForm):
             widget.attrs.setdefault("autocomplete", "off")
 
         self.fields["observaciones"].widget.attrs["placeholder"] = "Observaciones generales"
-        self.fields["indicar_cual_cctv"].widget.attrs["placeholder"] = "Escribe observacion CCTV"
-
     def clean(self):
         cleaned_data = super().clean()
 

@@ -74,12 +74,12 @@
 
     var stepConfig = [
       { label: 'Clima y Riesgos', markers: ['FECHA'] },
-      { label: 'RRHH', markers: ['RRHH (TABLA NUEVA)'] },
+      { label: 'RRHH', markers: ['TURNO ALERTA', 'RRHH (TABLA NUEVA)'] },
       { label: 'Vehiculos', markers: ['VEHICULOS COMUNIDAD'] },
       { label: 'Indicadores', markers: ['INDICADORES'] },
       { label: 'Operativos', markers: ['OPERATIVOS'] },
       { label: 'Presiones', markers: ['PRESIONES'] },
-      { label: 'Balizas y Novedades', markers: ['BALIZAS', 'OTRAS NOVEDADES'] },
+      { label: 'Balizas y Sistema CCTV', markers: ['BALIZAS Y SISTEMA CCTV', 'BALIZAS', 'OTRAS NOVEDADES'] },
     ];
 
     var rows = Array.from(table.querySelectorAll('tr'));
@@ -296,7 +296,7 @@
       }
       var configs = {
         1: [
-          { label: 'RRHH General', marker: 'RRHH GENERAL' },
+          { label: 'Turno Alerta', marker: 'TURNO ALERTA' },
           { label: 'Turno Comunidad', marker: 'PERSONAL DE TURNO COMUNIDAD' },
           { label: 'Turno AyS', marker: 'PERSONAL DE TURNO AYS' },
         ],
@@ -304,7 +304,7 @@
           { label: 'Electricos', marker: 'ELEC' },
           { label: 'Solar', marker: 'SOLAR' },
           { label: 'Inversores', marker: 'INVERSORES' },
-          { label: 'CCTV', marker: 'SISTEMA CCTV' },
+          { label: 'Atlas/GPS', marker: 'SISTEMA ATLAS/GPS' },
           { label: 'Portones', marker: 'PORTONES' },
         ],
         6: [

@@ -142,20 +142,20 @@
                 </tr>
                 <thead>
                   <tr>
-                    <th colspan="4" class="text-center py-3 text-light bg-dark">RRHH (TABLA NUEVA)</th>
-                  </tr>
-                </thead>
-                <thead>
-                  <tr>
-                    <th>CARGO</th>
-                    <th>NOMBRE</th>
-                    <th>MEDIO/LUGAR</th>
-                    <th>OBSERVACION</th>
+                    <th colspan="4" class="text-center py-3 text-light bg-dark">TURNO ALERTA</th>
                   </tr>
                 </thead>
                 {% for section in form.rrhh_sections %}
+                {% if not forloop.first %}
                 <tr>
                   <td colspan="4" class="bg-dark text-light"><strong>{{ section.title }}</strong></td>
+                </tr>
+                {% endif %}
+                <tr class="active">
+                  <th>CARGO</th>
+                  <th>NOMBRE</th>
+                  <th>MEDIO/LUGAR</th>
+                  <th>OBSERVACION</th>
                 </tr>
                 {% for row in section.rows %}
                 <tr class="rrhh-data-row">
@@ -318,7 +318,7 @@
 
                 </tr>
                 <tr>
-                  <td class="bg-dark text-light">SISTEMA CCTV (OBSERVACION)</td>
+                  <td class="bg-dark text-light">SISTEMA ATLAS/GPS</td>
                   <td colspan="3">{{ form.indicar_cual_cctv }}</td>
                 </tr>
                 <tr>
@@ -411,9 +411,6 @@
                     <th colspan="4" class="text-center py-3 text-light bg-dark">PRESIONES</th>
                   </tr>
                 </thead>
-                <td colspan="4" class="text-center">
-                  <img src="{% static 'images/66059.jpg' %}" alt="Referencia manometro" style="max-width: 220px;">
-                </td>
                 <thead>
                     <tr>
                       <th>ITEM</th>
@@ -472,13 +469,17 @@
 
 
                 <thead>
-                  <th colspan="4" class="bg-dark text-white">BALIZAS (indique cual estÃ¡ encendida)</th>
+                  <tr>
+                  <th colspan="4" class="text-center py-3 text-light bg-dark">BALIZAS Y SISTEMA CCTV</th>
+                  </tr>
                 </thead>
-                <tr>
-                  <th>BALIZAS</th>
-                  <th>ON/OFF</th>
-                  <th colspan="2">OBSERVACIONES <small> (Dejar en blanco si no hay observaciones)</small></th>
-                </tr>
+                <thead>
+                  <tr>
+                    <th>BALIZAS</th>
+                    <th>ON/OFF</th>
+                    <th colspan="2">OBSERVACIONES <small> (Dejar en blanco si no hay observaciones)</small></th>
+                  </tr>
+                </thead>
                 <tr>
                   <td>PEAS AIRES</td>
                   <td class="text-center">{{ form.peas_aires }}</td>
@@ -515,9 +516,14 @@
                   <td colspan="2" class="text-center">{{ form.obs_mestiza_belloto }}</td>
               </tr>
               <tr>
-                  <td>ELEVADORA GH</td>
+                  <td>PORTAL GH</td>
                   <td class="text-center">{{ form.elevadora_gh }}</td>
                   <td colspan="2" class="text-center">{{ form.obs_elevadora_gh }}</td>
+              </tr>
+              <tr>
+                  <td>LOMAS ACCESO</td>
+                  <td class="text-center">{{ form.lomas_acceso }}</td>
+                  <td colspan="2" class="text-center">{{ form.obs_lomas_acceso }}</td>
               </tr>
               <tr>
                   <td>SISTEMA O</td>
@@ -525,17 +531,17 @@
                   <td colspan="2" class="text-center">{{ form.obs_sistema_o }}</td>
               </tr>
 
-              <tr>
-                <td>POZO CH-1</td>
-                <td class="text-center">{{ form.pozo_ch1 }}</td>
-                <td colspan="2" class="text-center">{{ form.pozo_ch1_observaciones }}</td>
-            </tr>
+                <tr>
+                  <td>POZO CH-1</td>
+                  <td class="text-center">{{ form.pozo_ch1 }}</td>
+                  <td colspan="2" class="text-center">{{ form.pozo_ch1_observaciones }}</td>
+              </tr>
 
-            <tr>
-              <td>PLANTA MIRADOR GH</td>
-              <td class="text-center">{{ form.planta_mirador_gh }}</td>
-              <td colspan="2" class="text-center">{{ form.planta_mirador_gh_observaciones }}</td>
-          </tr>
+              <tr>
+                <td>PLANTA MIRADOR GH</td>
+                <td class="text-center">{{ form.planta_mirador_gh }}</td>
+                <td colspan="2" class="text-center">{{ form.planta_mirador_gh_observaciones }}</td>
+            </tr>
 
           <tr>
             <td>POZO 7</td>

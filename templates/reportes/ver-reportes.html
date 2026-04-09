@@ -113,6 +113,15 @@
       vertical-align: top;
       word-break: break-word;
     }
+    .section-body th {
+      border: 1px solid #d9e3ef;
+      padding: 7px 8px;
+      font-size: 12px;
+      text-align: left;
+      background-color: #f1f5f9;
+      color: #1f334d;
+      font-weight: 700;
+    }
     .section-body tr:nth-child(even) td {
       background-color: #f9fbfd;
     }
@@ -233,9 +242,9 @@
           <tr>
             <td>
               <table class="section" role="presentation" cellpadding="0" cellspacing="0" border="0">
-                <tr><th class="section-title" colspan="4">1) Clima y Riesgos</th></tr>
-                <thead class="section-head">
-                  <tr><th>Item</th><th>Unidad</th><th>Foresta</th><th>Lomas</th></tr>
+                <thead>
+                  <tr><th class="section-title" colspan="4">1) Clima y Riesgos</th></tr>
+                  <tr class="section-head"><th>Item</th><th>Unidad</th><th>Foresta</th><th>Lomas</th></tr>
                 </thead>
                 <tbody class="section-body">
                   <tr><td>Temperatura</td><td>Celcius</td><td>{{ reporte.temperatura }}</td><td>{{ reporte.lomas_temperatura }}</td></tr>
@@ -256,13 +265,16 @@
           <tr>
             <td>
               <table class="section" role="presentation" cellpadding="0" cellspacing="0" border="0">
-                <tr><th class="section-title" colspan="4">2) RRHH</th></tr>
-                <thead class="section-head">
-                  <tr><th>Cargo</th><th>Nombre</th><th>Medio/Lugar</th><th>Observacion</th></tr>
-                </thead>
+                <tr><th class="section-title" colspan="4">2) Turno Alerta</th></tr>
                 <tbody class="section-body">
                   {% for section in rrhh_sections %}
                   <tr class="rrhh-group"><td colspan="4">{{ section.title }}</td></tr>
+                  <tr>
+                    <th>Cargo</th>
+                    <th>Nombre</th>
+                    <th>Medio/Lugar</th>
+                    <th>Observacion</th>
+                  </tr>
                   {% for row in section.rows %}
                   <tr>
                     <td>{{ row.label }}</td>
@@ -281,9 +293,9 @@
           <tr>
             <td>
               <table class="section" role="presentation" cellpadding="0" cellspacing="0" border="0">
-                <tr><th class="section-title" colspan="4">3) Vehiculos Comunidad</th></tr>
-                <thead class="section-head">
-                  <tr><th>Vehiculo</th><th colspan="2">Estado</th><th>Odometro (KMS)</th></tr>
+                <thead>
+                  <tr><th class="section-title" colspan="4">3) Vehiculos Comunidad</th></tr>
+                  <tr class="section-head"><th>Vehiculo</th><th colspan="2">Estado</th><th>Odometro (KMS)</th></tr>
                 </thead>
                 <tbody class="section-body">
                   <tr><td>Movil 13</td><td colspan="2">{{ reporte.movil_13_stado }}</td><td>{{ reporte.movil_13_odometro }}</td></tr>
@@ -298,8 +310,10 @@
           <tr>
             <td>
               <table class="section" role="presentation" cellpadding="0" cellspacing="0" border="0">
-                <tr><th class="section-title" colspan="4">4) Indicadores</th></tr>
-                <thead class="section-head"><tr><th>Elec</th><th>Central</th><th>GHR</th><th>Lomas</th></tr></thead>
+                <thead>
+                  <tr><th class="section-title" colspan="4">4) Indicadores</th></tr>
+                  <tr class="section-head"><th>Elec</th><th>Central</th><th>GHR</th><th>Lomas</th></tr>
+                </thead>
                 <tbody class="section-body">
                   <tr><td>L1</td><td>{{ reporte.elect_central_l1 }}</td><td>{{ reporte.elect_ghr_l1 }}</td><td>{{ reporte.elect_lomas_l1 }}</td></tr>
                   <tr><td>L2</td><td>{{ reporte.elect_central_l2 }}</td><td>{{ reporte.elect_ghr_l2 }}</td><td>{{ reporte.elect_lomas_l2 }}</td></tr>
@@ -315,7 +329,7 @@
                 <tbody class="section-body"><tr><td>ON/OFF</td><td>{{ reporte.solar_central_3led_izq }}</td><td>{{ reporte.solar_ghr_3led_der }}</td><td>{{ reporte.solar_lomas_led_amarillo }}</td></tr></tbody>
                 <thead class="section-head"><tr><th>Inversores</th><th>INV IZQ</th><th>INV MEDIO</th><th>INV DER</th></tr></thead>
                 <tbody class="section-body"><tr><td>Luz roja ON/OFF</td><td>{{ reporte.inversor_central_izq }}</td><td>{{ reporte.inversor_ghr_medio }}</td><td>{{ reporte.inversor_lomas_derecho }}</td></tr></tbody>
-                <thead class="section-head"><tr><th colspan="4">Sistema CCTV (Observacion)</th></tr></thead>
+                <thead class="section-head"><tr><th colspan="4">Sistema ATLAS/GPS</th></tr></thead>
                 <tbody class="section-body"><tr><td colspan="4">{{ reporte.indicar_cual_cctv }}</td></tr></tbody>
                 <thead class="section-head"><tr><th>Portones</th><th>Mestiza</th><th>GH</th><th>Cargadero</th></tr></thead>
                 <tbody class="section-body">
@@ -335,8 +349,10 @@
           <tr>
             <td>
               <table class="section" role="presentation" cellpadding="0" cellspacing="0" border="0">
-                <tr><th class="section-title" colspan="4">5) Operativos</th></tr>
-                <thead class="section-head"><tr><th>Item</th><th>Cantidad</th><th colspan="2">Observaciones</th></tr></thead>
+                <thead>
+                  <tr><th class="section-title" colspan="4">5) Operativos</th></tr>
+                  <tr class="section-head"><th>Item</th><th>Cantidad</th><th colspan="2">Observaciones</th></tr>
+                </thead>
                 <tbody class="section-body">
                   <tr><td>Vuelos drone dia</td><td>{{ reporte.vuelos_drone|default_if_none:"" }}</td><td colspan="2">{{ reporte.obs_vuelos_drone|upper }}</td></tr>
                   <tr><td>Accesos externos turno</td><td>{{ reporte.accesos_extern_turn|default_if_none:"" }}</td><td colspan="2">{{ reporte.obs_accesos_extern_turn|upper }}</td></tr>
@@ -350,8 +366,10 @@
           <tr>
             <td>
               <table class="section" role="presentation" cellpadding="0" cellspacing="0" border="0">
-                <tr><th class="section-title" colspan="4">6) Presiones</th></tr>
-                <thead class="section-head"><tr><th>Item</th><th>Lectura</th><th colspan="2">Observaciones</th></tr></thead>
+                <thead>
+                  <tr><th class="section-title" colspan="4">6) Presiones</th></tr>
+                  <tr class="section-head"><th>Item</th><th>Lectura</th><th colspan="2">Observaciones</th></tr>
+                </thead>
                 <tbody class="section-body">
                   <tr><td>Lomas</td><td>{{ reporte.presion_lomas }}</td><td colspan="2">{{ reporte.presion_lomas_obs }}</td></tr>
                   <tr><td>GH</td><td>{{ reporte.presion_gh }}</td><td colspan="2">{{ reporte.presion_gh_obs }}</td></tr>
@@ -364,12 +382,14 @@
             </td>
           </tr>
 
-          <!-- 7) Balizas y Novedades -->
+          <!-- 7) Balizas y Sistema CCTV -->
           <tr>
             <td>
               <table class="section" role="presentation" cellpadding="0" cellspacing="0" border="0">
-                <tr><th class="section-title" colspan="4">7) Balizas y Novedades</th></tr>
-                <thead class="section-head"><tr><th>Baliza / Punto</th><th>Estado</th><th colspan="2">Observaciones</th></tr></thead>
+                <thead>
+                  <tr><th class="section-title" colspan="4">7) Balizas y Sistema CCTV</th></tr>
+                  <tr class="section-head"><th>Baliza / Punto</th><th>Estado</th><th colspan="2">Observaciones</th></tr>
+                </thead>
                 <tbody class="section-body">
                   <tr><td>PEAS Aires</td><td>{{ reporte.peas_aires }}</td><td colspan="2">{{ reporte.obs_peas_aires|upper }}</td></tr>
                   <tr><td>Cargadero Aires</td><td>{{ reporte.cargadero_aires }}</td><td colspan="2">{{ reporte.obs_cargadero_aires|upper }}</td></tr>
@@ -377,8 +397,9 @@
                   <tr><td>Sala 2</td><td>{{ reporte.sala_2 }}</td><td colspan="2">{{ reporte.obs_sala_2|upper }}</td></tr>
                   <tr><td>Sala Club 2</td><td>{{ reporte.sala_club2 }}</td><td colspan="2">{{ reporte.obs_sala_club2|upper }}</td></tr>
                   <tr><td>Estanques X</td><td>{{ reporte.estanques_x }}</td><td colspan="2">{{ reporte.obs_estanques_x|upper }}</td></tr>
-                  <tr><td>Mestiza - Belloto</td><td>{{ reporte.mestiza_belloto }}</td><td colspan="2">{{ reporte.obs_mestiza_belloto|upper }}</td></tr>
-                  <tr><td>Elevadora GH</td><td>{{ reporte.elevadora_gh }}</td><td colspan="2">{{ reporte.obs_elevadora_gh|upper }}</td></tr>
+                  <tr><td>Torre Y( MESTIZA BELLOTO)</td><td>{{ reporte.mestiza_belloto }}</td><td colspan="2">{{ reporte.obs_mestiza_belloto|upper }}</td></tr>
+                  <tr><td>Portal GH</td><td>{{ reporte.elevadora_gh }}</td><td colspan="2">{{ reporte.obs_elevadora_gh|upper }}</td></tr>
+                  <tr><td>Lomas Acceso</td><td>{{ reporte.lomas_acceso }}</td><td colspan="2">{{ reporte.obs_lomas_acceso|upper }}</td></tr>
                   <tr><td>Sistema O</td><td>{{ reporte.sistema_o }}</td><td colspan="2">{{ reporte.obs_sistema_o|upper }}</td></tr>
                   <tr><td>Pozo CH-1</td><td>{{ reporte.pozo_ch1 }}</td><td colspan="2">{{ reporte.pozo_ch1_observaciones }}</td></tr>
                   <tr><td>Planta Mirador GH</td><td>{{ reporte.planta_mirador_gh }}</td><td colspan="2">{{ reporte.planta_mirador_gh_observaciones }}</td></tr>

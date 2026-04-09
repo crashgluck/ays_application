@@ -140,6 +140,7 @@ class Reporte(models.Model):
     estanques_x = models.CharField(max_length=100)
     mestiza_belloto = models.CharField(max_length=100)
     elevadora_gh = models.CharField(max_length=100)
+    lomas_acceso = models.CharField(max_length=100, blank=True, null=True)
     lomas = models.CharField(max_length=100)
     otras = models.CharField(max_length=100)
 
@@ -158,10 +159,13 @@ class Reporte(models.Model):
     obs_estanques_x = models.TextField(blank=True, null=True)
     obs_mestiza_belloto = models.TextField(blank=True, null=True)
     obs_elevadora_gh = models.TextField(blank=True, null=True)
+    obs_lomas_acceso = models.TextField(blank=True, null=True)
     sistema_o = models.CharField(max_length=100, blank=True, null=True)
     obs_sistema_o = models.TextField(blank=True, null=True)
     obs_lomas = models.TextField(blank=True, null=True)
     obs_otras = models.TextField(blank=True, null=True)
+    baliza_encendida_lomas_acceso = models.CharField(max_length=10, blank=True, null=True)
+    baliza_encendida_lomas = models.CharField(max_length=10, blank=True, null=True)
 
     confirmado = models.BooleanField(default=False)
 
