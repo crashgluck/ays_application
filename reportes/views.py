@@ -4,6 +4,7 @@ import logging
 from django.contrib import messages
 from django.contrib.auth.decorators import login_required
 from django.core.paginator import Paginator
+from django.db import IntegrityError
 from django.http import HttpResponse
 from django.shortcuts import get_object_or_404, redirect, render
 
@@ -31,9 +32,18 @@ def enviar_reporte(request):
     if request.method == "POST":
         form = ReportForm(request.POST)
         if form.is_valid():
-            reporte = form.save()
-            messages.success(request, f"Reporte #{reporte.id} creado. Revisa y confirma el envio.")
-            return redirect("guardar_reporte", reporte_id=reporte.id)
+            try:
+                reporte = form.save()
+            except IntegrityError:
+                logger.exception("Error de integridad al guardar reporte")
+                form.add_error(
+                    None,
+                    "No se pudo guardar porque faltan datos obligatorios o hay un valor invalido.",
+                )
+                messages.error(request, "Corrige los campos marcados antes de guardar.")
+            else:
+                messages.success(request, f"Reporte #{reporte.id} creado. Revisa y confirma el envio.")
+                return redirect("guardar_reporte", reporte_id=reporte.id)
         messages.error(request, "No pudimos guardar el reporte. Revisa los campos marcados.")
     else:
         form = ReportForm(instance=ultimo_reporte)

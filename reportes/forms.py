@@ -379,10 +379,16 @@ class ReportForm(forms.ModelForm):
 
     presion_lomas = forms.FloatField(
         label="Presion Lomas",
-        required=False,
+        required=True,
         min_value=0,
         max_value=8,
         widget=forms.NumberInput(attrs={"step": "0.1", "min": "0", "max": "8", "inputmode": "decimal"}),
+        error_messages={
+            "required": "Completa este campo (0 a 8).",
+            "invalid": "Ingresa un numero valido.",
+            "min_value": "El valor minimo es 0.",
+            "max_value": "El valor maximo es 8.",
+        },
     )
     presion_gh = forms.FloatField(
         label="Presion GH",
@@ -390,34 +396,63 @@ class ReportForm(forms.ModelForm):
         min_value=0,
         max_value=8,
         widget=forms.NumberInput(attrs={"step": "0.1", "min": "0", "max": "8", "inputmode": "decimal"}),
+        error_messages={
+            "invalid": "Ingresa un numero valido.",
+            "min_value": "El valor minimo es 0.",
+            "max_value": "El valor maximo es 8.",
+        },
     )
     sm_ch2 = forms.FloatField(
         label="SM CH2",
-        required=False,
+        required=True,
         min_value=0,
         max_value=8,
         widget=forms.NumberInput(attrs={"step": "0.1", "min": "0", "max": "8", "inputmode": "decimal"}),
+        error_messages={
+            "required": "Completa este campo (0 a 8).",
+            "invalid": "Ingresa un numero valido.",
+            "min_value": "El valor minimo es 0.",
+            "max_value": "El valor maximo es 8.",
+        },
     )
     sm_3 = forms.FloatField(
         label="SM 3",
-        required=False,
+        required=True,
         min_value=0,
         max_value=8,
         widget=forms.NumberInput(attrs={"step": "0.1", "min": "0", "max": "8", "inputmode": "decimal"}),
+        error_messages={
+            "required": "Completa este campo (0 a 8).",
+            "invalid": "Ingresa un numero valido.",
+            "min_value": "El valor minimo es 0.",
+            "max_value": "El valor maximo es 8.",
+        },
     )
     sm_1 = forms.FloatField(
         label="SM 1",
-        required=False,
+        required=True,
         min_value=0,
         max_value=8,
         widget=forms.NumberInput(attrs={"step": "0.1", "min": "0", "max": "8", "inputmode": "decimal"}),
+        error_messages={
+            "required": "Completa este campo (0 a 8).",
+            "invalid": "Ingresa un numero valido.",
+            "min_value": "El valor minimo es 0.",
+            "max_value": "El valor maximo es 8.",
+        },
     )
     torre_y = forms.FloatField(
         label="TORRE Y",
-        required=False,
+        required=True,
         min_value=0,
         max_value=8,
         widget=forms.NumberInput(attrs={"step": "0.1", "min": "0", "max": "8", "inputmode": "decimal"}),
+        error_messages={
+            "required": "Completa este campo (0 a 8).",
+            "invalid": "Ingresa un numero valido.",
+            "min_value": "El valor minimo es 0.",
+            "max_value": "El valor maximo es 8.",
+        },
     )
 
     presion_lomas_obs = forms.CharField(max_length=250, required=False)
