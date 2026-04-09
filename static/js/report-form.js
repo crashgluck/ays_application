@@ -107,6 +107,40 @@
       row.dataset.wizardStep = String(currentStep);
     });
 
+    // Hard mapping by field-name prefix so RRHH never depends only on text markers.
+    rows.forEach(function (row) {
+      var rrhhField = row.querySelector(
+        'input[name^="rrhh_"], select[name^="rrhh_"], textarea[name^="rrhh_"]'
+      );
+      if (rrhhField) {
+        row.dataset.wizardStep = '1';
+      }
+    });
+
+    function stepHasFields(stepIndex) {
+      return rows.some(function (row) {
+        return Number(row.dataset.wizardStep) === stepIndex && !!row.querySelector('input, select, textarea');
+      });
+    }
+
+    // Safety net for deployments with partial template/static cache mismatch:
+    // if RRHH step has no fields, force-map RRHH-like rows to step 2.
+    if (!stepHasFields(1)) {
+      rows.forEach(function (row) {
+        var text = normalizeText(row.textContent);
+        var isRrhhRow =
+          row.classList.contains('rrhh-data-row') ||
+          text.indexOf('TURNO ALERTA') !== -1 ||
+          text.indexOf('PERSONAL DE TURNO COMUNIDAD') !== -1 ||
+          text.indexOf('PERSONAL DE TURNO AYS') !== -1 ||
+          (text.indexOf('CARGO') !== -1 && text.indexOf('MEDIO/LUGAR') !== -1) ||
+          (text.indexOf('CARGO') !== -1 && text.indexOf('MEDIO') !== -1);
+        if (isRrhhRow) {
+          row.dataset.wizardStep = '1';
+        }
+      });
+    }
+
     var totalSteps = stepConfig.length;
     var stage = 0;
     var chips = [];
