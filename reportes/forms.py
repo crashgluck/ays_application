@@ -379,12 +379,11 @@ class ReportForm(forms.ModelForm):
 
     presion_lomas = forms.FloatField(
         label="Presion Lomas",
-        required=True,
+        required=False,
         min_value=0,
         max_value=8,
         widget=forms.NumberInput(attrs={"step": "0.1", "min": "0", "max": "8", "inputmode": "decimal"}),
         error_messages={
-            "required": "Completa este campo (0 a 8).",
             "invalid": "Ingresa un numero valido.",
             "min_value": "El valor minimo es 0.",
             "max_value": "El valor maximo es 8.",
@@ -404,12 +403,11 @@ class ReportForm(forms.ModelForm):
     )
     sm_ch2 = forms.FloatField(
         label="SM CH2",
-        required=True,
+        required=False,
         min_value=0,
         max_value=8,
         widget=forms.NumberInput(attrs={"step": "0.1", "min": "0", "max": "8", "inputmode": "decimal"}),
         error_messages={
-            "required": "Completa este campo (0 a 8).",
             "invalid": "Ingresa un numero valido.",
             "min_value": "El valor minimo es 0.",
             "max_value": "El valor maximo es 8.",
@@ -417,12 +415,11 @@ class ReportForm(forms.ModelForm):
     )
     sm_3 = forms.FloatField(
         label="SM 3",
-        required=True,
+        required=False,
         min_value=0,
         max_value=8,
         widget=forms.NumberInput(attrs={"step": "0.1", "min": "0", "max": "8", "inputmode": "decimal"}),
         error_messages={
-            "required": "Completa este campo (0 a 8).",
             "invalid": "Ingresa un numero valido.",
             "min_value": "El valor minimo es 0.",
             "max_value": "El valor maximo es 8.",
@@ -430,12 +427,11 @@ class ReportForm(forms.ModelForm):
     )
     sm_1 = forms.FloatField(
         label="SM 1",
-        required=True,
+        required=False,
         min_value=0,
         max_value=8,
         widget=forms.NumberInput(attrs={"step": "0.1", "min": "0", "max": "8", "inputmode": "decimal"}),
         error_messages={
-            "required": "Completa este campo (0 a 8).",
             "invalid": "Ingresa un numero valido.",
             "min_value": "El valor minimo es 0.",
             "max_value": "El valor maximo es 8.",
@@ -443,12 +439,11 @@ class ReportForm(forms.ModelForm):
     )
     torre_y = forms.FloatField(
         label="TORRE Y",
-        required=True,
+        required=False,
         min_value=0,
         max_value=8,
         widget=forms.NumberInput(attrs={"step": "0.1", "min": "0", "max": "8", "inputmode": "decimal"}),
         error_messages={
-            "required": "Completa este campo (0 a 8).",
             "invalid": "Ingresa un numero valido.",
             "min_value": "El valor minimo es 0.",
             "max_value": "El valor maximo es 8.",
@@ -671,6 +666,12 @@ class ReportForm(forms.ModelForm):
         jefe_manual = (self.cleaned_data.get("jefe_semana") or "").strip()
         instance.central = central_manual or rrhh_payload.get("central", {}).get("nombre", "")
         instance.jefe_semana = jefe_manual or rrhh_payload.get("jefe_semana", {}).get("nombre", "")
+
+        # Evita errores de integridad en MySQL: si presiones obligatorias del modelo
+        # llegan vacias, se persisten como 0 por defecto.
+        for pressure_field in ("presion_lomas", "sm_ch2", "sm_3", "sm_1", "torre_y"):
+            value = self.cleaned_data.get(pressure_field)
+            setattr(instance, pressure_field, 0 if value is None else value)
 
         if commit:
             instance.save()
