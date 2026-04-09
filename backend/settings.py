@@ -138,10 +138,15 @@ STATIC_ROOT = Path(
 )
 
 if IS_PRODUCTION:
+    USE_MANIFEST_STATIC = env_bool("DJANGO_USE_MANIFEST_STATIC", False)
     STORAGES = {
         "default": {"BACKEND": "django.core.files.storage.FileSystemStorage"},
         "staticfiles": {
-            "BACKEND": "django.contrib.staticfiles.storage.ManifestStaticFilesStorage"
+            "BACKEND": (
+                "django.contrib.staticfiles.storage.ManifestStaticFilesStorage"
+                if USE_MANIFEST_STATIC
+                else "django.contrib.staticfiles.storage.StaticFilesStorage"
+            )
         },
     }
 
