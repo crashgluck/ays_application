@@ -74,7 +74,17 @@
 
     var stepConfig = [
       { label: 'Clima y Riesgos', markers: ['FECHA'] },
-      { label: 'RRHH', markers: ['TURNO ALERTA', 'RRHH (TABLA NUEVA)'] },
+      {
+        label: 'RRHH',
+        markers: [
+          'TURNO ALERTA',
+          'RRHH (TABLA NUEVA)',
+          'PERSONAL DE TURNO COMUNIDAD',
+          'PERSONAL DE TURNO AYS',
+          'CARGO',
+          'MEDIO/LUGAR',
+        ],
+      },
       { label: 'Vehiculos', markers: ['VEHICULOS COMUNIDAD'] },
       { label: 'Indicadores', markers: ['INDICADORES'] },
       { label: 'Operativos', markers: ['OPERATIVOS'] },
