@@ -145,6 +145,9 @@
                     <th colspan="4" class="text-center py-3 text-light bg-dark">TURNO ALERTA</th>
                   </tr>
                 </thead>
+                <tr style="display:none" aria-hidden="true">
+                  <td colspan="4">RRHH (TABLA NUEVA)</td>
+                </tr>
                 {% for section in form.rrhh_sections %}
                 {% if not forloop.first %}
                 <tr>
@@ -619,7 +622,7 @@
     </div>
 </section>
 {% block scripts %}
-<script src="{% static 'js/report-form.js' %}" defer></script>
+<script src="{% static 'js/report-form.js' %}?v=20260409-rrhh-hotfix" defer></script>
 {% endblock %}
 
 {% endblock %}

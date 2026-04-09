@@ -123,6 +123,12 @@
       });
     }
 
+    function stepHasRows(stepIndex) {
+      return rows.some(function (row) {
+        return Number(row.dataset.wizardStep) === stepIndex;
+      });
+    }
+
     // Safety net for deployments with partial template/static cache mismatch:
     // if RRHH step has no fields, force-map RRHH-like rows to step 2.
     if (!stepHasFields(1)) {
@@ -387,6 +393,18 @@
 
     function showStep(stepIndex) {
       stage = Math.max(0, Math.min(stepIndex, totalSteps - 1));
+
+      // Final fallback: if selected stage has no rows, move to first non-empty stage.
+      if (!stepHasRows(stage)) {
+        var fallbackStage = 0;
+        while (fallbackStage < totalSteps && !stepHasRows(fallbackStage)) {
+          fallbackStage += 1;
+        }
+        if (fallbackStage < totalSteps) {
+          stage = fallbackStage;
+        }
+      }
+
       rows.forEach(function (row) {
         row.hidden = Number(row.dataset.wizardStep) !== stage;
       });
