@@ -135,6 +135,7 @@ OPTIONS2 = [
 OPTIONS3 = [
     ("ON", "ON"),
     ("OFF", "OFF"),
+    ("GRABACION LOCAL", "GRABACION LOCAL"),
     ("No visible - Sin imagen ", "No visible - Sin imagen "),
 ]
 
