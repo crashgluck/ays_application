@@ -125,6 +125,7 @@ class Reporte(models.Model):
     inversor_lomas_derecho = models.CharField(max_length=100)
 
     indicar_cual_cctv = models.CharField(max_length=255, blank=True, default="Todas apagadas")
+    alarma_ugps_activa = models.CharField(max_length=255, blank=True, null=True)
     cctv_sistema_o = models.CharField(max_length=100, blank=True, null=True)
     observaciones = models.TextField(blank=True, null=True)
 
@@ -134,6 +135,7 @@ class Reporte(models.Model):
 
     peas_aires = models.CharField(max_length=100)
     cargadero_aires = models.CharField(max_length=100)
+    planta_solar = models.CharField(max_length=100, blank=True, null=True)
     sala_1 = models.CharField(max_length=100)
     sala_2 = models.CharField(max_length=100)
     sala_club2 = models.CharField(max_length=100)
@@ -237,3 +239,17 @@ class Reporte(models.Model):
 
     def __str__(self):
         return f'Reporte creado el {self.fecha_hora}'
+
+
+class RRHHPersonalVigente(models.Model):
+    row_key = models.CharField(max_length=100, unique=True)
+    nombre_vigente = models.CharField(max_length=150, blank=True, default="")
+    updated_at = models.DateTimeField(auto_now=True)
+
+    class Meta:
+        ordering = ["row_key"]
+        verbose_name = "Personal RRHH vigente"
+        verbose_name_plural = "Personal RRHH vigente"
+
+    def __str__(self):
+        return f"{self.row_key}: {self.nombre_vigente or '(sin nombre)'}"

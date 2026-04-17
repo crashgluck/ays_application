@@ -3,7 +3,12 @@ import re
 from django import forms
 
 from .models import Reporte
-from .rrhh import RRHH_SECTIONS, iter_rrhh_rows, normalize_rrhh_payload
+from .rrhh import (
+    RRHH_SECTIONS,
+    build_rrhh_initial_payload,
+    iter_rrhh_rows,
+    load_rrhh_personal_vigente,
+)
 
 
 IGP_OPTIONS = [
@@ -164,6 +169,7 @@ class ReportForm(forms.ModelForm):
         "observaciones",
         "otras_novedades",
         "indicar_cual_cctv",
+        "alarma_ugps_activa",
     }
 
     temperatura = forms.CharField(label="Temperatura", required=False)
@@ -291,6 +297,11 @@ class ReportForm(forms.ModelForm):
         required=False,
         label="SISTEMA ATLAS/GPS",
     )
+    alarma_ugps_activa = forms.CharField(
+        required=False,
+        label="Alguna alarma UGPS activa?",
+        max_length=255,
+    )
     observaciones = forms.CharField(
         required=False,
         widget=forms.Textarea(attrs={"rows": 3}),
@@ -303,6 +314,7 @@ class ReportForm(forms.ModelForm):
 
     peas_aires = forms.ChoiceField(choices=OPTIONS3, widget=forms.RadioSelect(), required=False)
     cargadero_aires = forms.ChoiceField(choices=OPTIONS3, widget=forms.RadioSelect(), required=False)
+    planta_solar = forms.ChoiceField(choices=OPTIONS3, widget=forms.RadioSelect(), required=False)
     sala_1 = forms.ChoiceField(choices=OPTIONS3, widget=forms.RadioSelect(), required=False)
     sala_2 = forms.ChoiceField(choices=OPTIONS3, widget=forms.RadioSelect(), required=False)
     sala_club2 = forms.ChoiceField(choices=OPTIONS3, widget=forms.RadioSelect(), required=False)
@@ -381,72 +393,72 @@ class ReportForm(forms.ModelForm):
         label="Presion Lomas",
         required=False,
         min_value=0,
-        max_value=8,
-        widget=forms.NumberInput(attrs={"step": "0.1", "min": "0", "max": "8", "inputmode": "decimal"}),
+        max_value=10,
+        widget=forms.NumberInput(attrs={"step": "0.1", "min": "0", "max": "10", "inputmode": "decimal"}),
         error_messages={
             "invalid": "Ingresa un numero valido.",
             "min_value": "El valor minimo es 0.",
-            "max_value": "El valor maximo es 8.",
+            "max_value": "El valor maximo es 10.",
         },
     )
     presion_gh = forms.FloatField(
         label="Presion GH",
         required=False,
         min_value=0,
-        max_value=8,
-        widget=forms.NumberInput(attrs={"step": "0.1", "min": "0", "max": "8", "inputmode": "decimal"}),
+        max_value=10,
+        widget=forms.NumberInput(attrs={"step": "0.1", "min": "0", "max": "10", "inputmode": "decimal"}),
         error_messages={
             "invalid": "Ingresa un numero valido.",
             "min_value": "El valor minimo es 0.",
-            "max_value": "El valor maximo es 8.",
+            "max_value": "El valor maximo es 10.",
         },
     )
     sm_ch2 = forms.FloatField(
         label="SM CH2",
         required=False,
         min_value=0,
-        max_value=8,
-        widget=forms.NumberInput(attrs={"step": "0.1", "min": "0", "max": "8", "inputmode": "decimal"}),
+        max_value=10,
+        widget=forms.NumberInput(attrs={"step": "0.1", "min": "0", "max": "10", "inputmode": "decimal"}),
         error_messages={
             "invalid": "Ingresa un numero valido.",
             "min_value": "El valor minimo es 0.",
-            "max_value": "El valor maximo es 8.",
+            "max_value": "El valor maximo es 10.",
         },
     )
     sm_3 = forms.FloatField(
         label="SM 3",
         required=False,
         min_value=0,
-        max_value=8,
-        widget=forms.NumberInput(attrs={"step": "0.1", "min": "0", "max": "8", "inputmode": "decimal"}),
+        max_value=10,
+        widget=forms.NumberInput(attrs={"step": "0.1", "min": "0", "max": "10", "inputmode": "decimal"}),
         error_messages={
             "invalid": "Ingresa un numero valido.",
             "min_value": "El valor minimo es 0.",
-            "max_value": "El valor maximo es 8.",
+            "max_value": "El valor maximo es 10.",
         },
     )
     sm_1 = forms.FloatField(
         label="SM 1",
         required=False,
         min_value=0,
-        max_value=8,
-        widget=forms.NumberInput(attrs={"step": "0.1", "min": "0", "max": "8", "inputmode": "decimal"}),
+        max_value=10,
+        widget=forms.NumberInput(attrs={"step": "0.1", "min": "0", "max": "10", "inputmode": "decimal"}),
         error_messages={
             "invalid": "Ingresa un numero valido.",
             "min_value": "El valor minimo es 0.",
-            "max_value": "El valor maximo es 8.",
+            "max_value": "El valor maximo es 10.",
         },
     )
     torre_y = forms.FloatField(
         label="TORRE Y",
         required=False,
         min_value=0,
-        max_value=8,
-        widget=forms.NumberInput(attrs={"step": "0.1", "min": "0", "max": "8", "inputmode": "decimal"}),
+        max_value=10,
+        widget=forms.NumberInput(attrs={"step": "0.1", "min": "0", "max": "10", "inputmode": "decimal"}),
         error_messages={
             "invalid": "Ingresa un numero valido.",
             "min_value": "El valor minimo es 0.",
-            "max_value": "El valor maximo es 8.",
+            "max_value": "El valor maximo es 10.",
         },
     )
 
@@ -497,7 +509,7 @@ class ReportForm(forms.ModelForm):
         return values
 
     def _build_rrhh_dynamic_fields(self):
-        rrhh_payload = normalize_rrhh_payload(getattr(self.instance, "rrhh_registros", None))
+        rrhh_initial = build_rrhh_initial_payload(getattr(self.instance, "rrhh_registros", None))
         self.rrhh_sections = []
 
         for section in RRHH_SECTIONS:
@@ -505,7 +517,7 @@ class ReportForm(forms.ModelForm):
             for row in section["rows"]:
                 row_key = row["key"]
                 nombre_field, medio_field, observacion_field = self._rrhh_field_names(row_key)
-                row_data = rrhh_payload.get(row_key, {})
+                row_data = rrhh_initial.get(row_key, {})
 
                 self.fields[nombre_field] = forms.CharField(required=False, label="Nombre")
                 self.fields[medio_field] = forms.ChoiceField(
@@ -513,18 +525,11 @@ class ReportForm(forms.ModelForm):
                     label="Medio/Lugar",
                     choices=RRHH_ML_CHOICES,
                 )
-                if row_key.startswith("equipo_tecnico_"):
-                    self.fields[observacion_field] = forms.ChoiceField(
-                        required=False,
-                        label="Estado",
-                        choices=RRHH_PRESENCE_CHOICES,
-                    )
-                else:
-                    self.fields[observacion_field] = forms.CharField(
-                        required=False,
-                        label="Observacion",
-                        widget=forms.TextInput(),
-                    )
+                self.fields[observacion_field] = forms.CharField(
+                    required=False,
+                    label="Observacion",
+                    widget=forms.TextInput(),
+                )
 
                 if not self.is_bound:
                     self.fields[nombre_field].initial = row_data.get("nombre", "")
@@ -534,13 +539,7 @@ class ReportForm(forms.ModelForm):
                         current_ml if current_ml in valid_values else ""
                     )
                     current_observacion = row_data.get("observacion", "")
-                    if row_key.startswith("equipo_tecnico_"):
-                        valid_presence_values = {choice[0] for choice in RRHH_PRESENCE_CHOICES}
-                        self.fields[observacion_field].initial = (
-                            current_observacion if current_observacion in valid_presence_values else ""
-                        )
-                    else:
-                        self.fields[observacion_field].initial = current_observacion
+                    self.fields[observacion_field].initial = current_observacion
 
                 section_rows.append(
                     {
@@ -677,3 +676,49 @@ class ReportForm(forms.ModelForm):
             instance.save()
             self.save_m2m()
         return instance
+
+
+class RRHHMasterStaffForm(forms.Form):
+    """Formulario de administracion para nombres vigentes RRHH."""
+
+    def __init__(self, *args, staff_map=None, **kwargs):
+        super().__init__(*args, **kwargs)
+        current_staff = staff_map or load_rrhh_personal_vigente()
+        self.sections = []
+
+        for section in RRHH_SECTIONS:
+            rows = []
+            for row in section["rows"]:
+                row_key = row["key"]
+                field_name = f"staff_{row_key}"
+                self.fields[field_name] = forms.CharField(
+                    required=False,
+                    label=row["label"],
+                    max_length=150,
+                    widget=forms.TextInput(
+                        attrs={
+                            "class": "form-control input-sm",
+                            "autocomplete": "off",
+                            "placeholder": "Sin asignar",
+                        }
+                    ),
+                )
+                if not self.is_bound:
+                    self.fields[field_name].initial = current_staff.get(row_key, "")
+
+                rows.append(
+                    {
+                        "key": row_key,
+                        "label": row["label"],
+                        "field_name": field_name,
+                    }
+                )
+            self.sections.append({"title": section["title"], "rows": rows})
+
+    def cleaned_staff_map(self) -> dict[str, str]:
+        if not self.is_valid():
+            raise ValueError("No se puede obtener staff map desde un formulario invalido.")
+        return {
+            row["key"]: (self.cleaned_data.get(f"staff_{row['key']}") or "").strip()
+            for row in iter_rrhh_rows()
+        }

@@ -331,6 +331,8 @@
                 <tbody class="section-body"><tr><td>Luz roja ON/OFF</td><td>{{ reporte.inversor_central_izq }}</td><td>{{ reporte.inversor_ghr_medio }}</td><td>{{ reporte.inversor_lomas_derecho }}</td></tr></tbody>
                 <thead class="section-head"><tr><th colspan="4">Sistema ATLAS/GPS</th></tr></thead>
                 <tbody class="section-body"><tr><td colspan="4">{{ reporte.indicar_cual_cctv }}</td></tr></tbody>
+                <thead class="section-head"><tr><th colspan="4">Alguna alarma UGPS activa?</th></tr></thead>
+                <tbody class="section-body"><tr><td colspan="4">{{ reporte.alarma_ugps_activa }}</td></tr></tbody>
                 <thead class="section-head"><tr><th>Portones</th><th>Mestiza</th><th>GH</th><th>Cargadero</th></tr></thead>
                 <tbody class="section-body">
                   <tr><td>Estado</td><td>{{ reporte.porton_mestiza }}</td><td>{{ reporte.porton_ghr }}</td><td>{{ reporte.porton_cargadero }}</td></tr>
@@ -393,6 +395,7 @@
                 <tbody class="section-body">
                   <tr><td>PEAS Aires</td><td>{{ reporte.peas_aires }}</td><td colspan="2">{{ reporte.obs_peas_aires|upper }}</td></tr>
                   <tr><td>Cargadero Aires</td><td>{{ reporte.cargadero_aires }}</td><td colspan="2">{{ reporte.obs_cargadero_aires|upper }}</td></tr>
+                  <tr><td>Planta Solar</td><td>{{ reporte.planta_solar }}</td><td colspan="2">-</td></tr>
                   <tr><td>Sala 1</td><td>{{ reporte.sala_1 }}</td><td colspan="2">{{ reporte.obs_sala_1|upper }}</td></tr>
                   <tr><td>Sala 2</td><td>{{ reporte.sala_2 }}</td><td colspan="2">{{ reporte.obs_sala_2|upper }}</td></tr>
                   <tr><td>Sala Club 2</td><td>{{ reporte.sala_club2 }}</td><td colspan="2">{{ reporte.obs_sala_club2|upper }}</td></tr>

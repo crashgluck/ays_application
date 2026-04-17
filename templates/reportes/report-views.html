@@ -13,6 +13,9 @@
 
         <div class="text-center" style="margin: 1rem 0 2rem;">
             <a href="{% url 'enviar_reporte' %}" class="btn btn-success">Crear nuevo reporte</a>
+            {% if can_manage_staff %}
+            <a href="{% url 'administrar_personal' %}" class="btn btn-default">Administrar personal</a>
+            {% endif %}
         </div>
 
         <div class="table-responsive">

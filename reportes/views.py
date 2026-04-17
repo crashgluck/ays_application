@@ -5,15 +5,20 @@ from django.contrib import messages
 from django.contrib.auth.decorators import login_required
 from django.core.paginator import Paginator
 from django.db import IntegrityError
-from django.http import HttpResponse
+from django.http import HttpResponse, HttpResponseForbidden
 from django.shortcuts import get_object_or_404, redirect, render
 
-from .forms import ReportForm
+from .forms import RRHHMasterStaffForm, ReportForm
 from .models import Reporte
 from .rrhh import build_rrhh_sections, get_rrhh_nombre
+from .rrhh import save_rrhh_personal_vigente
 from .services import send_report_email
 
 logger = logging.getLogger(__name__)
+
+
+def _can_manage_central(user) -> bool:
+    return bool(user.is_superuser or user.groups.filter(name="Central").exists())
 
 
 def _report_contacts(reporte):
@@ -136,6 +141,9 @@ def report_success(request):
 
 @login_required
 def report_views(request):
+    if not _can_manage_central(request.user):
+        return HttpResponseForbidden("No tienes permisos para acceder a Reporte Central.")
+
     reportes_qs = (
         Reporte.objects.only(
             "id",
@@ -154,8 +162,39 @@ def report_views(request):
     return render(
         request,
         "reportes/report-views.html",
-        {"page_obj": page_obj, "reportes": page_obj.object_list},
+        {
+            "page_obj": page_obj,
+            "reportes": page_obj.object_list,
+            "can_manage_staff": _can_manage_central(request.user),
+        },
     )
+
+
+@login_required
+def administrar_personal(request):
+    if not _can_manage_central(request.user):
+        return HttpResponseForbidden("No tienes permisos para administrar personal.")
+
+    if request.method == "POST":
+        form = RRHHMasterStaffForm(request.POST)
+        if form.is_valid():
+            try:
+                save_rrhh_personal_vigente(form.cleaned_staff_map())
+            except Exception:
+                logger.exception("Error guardando personal vigente RRHH")
+                messages.error(
+                    request,
+                    "No se pudo guardar el personal vigente. Intenta nuevamente.",
+                )
+            else:
+                messages.success(request, "Personal vigente actualizado correctamente.")
+                return redirect("administrar_personal")
+        else:
+            messages.error(request, "Revisa los campos antes de guardar.")
+    else:
+        form = RRHHMasterStaffForm()
+
+    return render(request, "reportes/administrar-personal.html", {"form": form})
 
 
 @login_required
@@ -320,7 +359,13 @@ def descargar_reporte_pdf(request, reporte_id):
         [36 * mm, 46 * mm, 46 * mm, 46 * mm],
     )
     story.append(Spacer(1, 4))
-    make_table([["Sistema ATLAS/GPS"], [v(reporte.indicar_cual_cctv)]], [174 * mm])
+    make_table(
+        [
+            ["Sistema ATLAS/GPS", "Alguna alarma UGPS activa?"],
+            [v(reporte.indicar_cual_cctv), v(reporte.alarma_ugps_activa)],
+        ],
+        [87 * mm, 87 * mm],
+    )
     story.append(Spacer(1, 4))
     make_table(
         [
@@ -368,6 +413,7 @@ def descargar_reporte_pdf(request, reporte_id):
             ["Item", "Estado", "Observacion"],
             ["PEAS Aires", v(reporte.peas_aires), v(reporte.obs_peas_aires)],
             ["Cargadero Aires", v(reporte.cargadero_aires), v(reporte.obs_cargadero_aires)],
+            ["Planta Solar", v(reporte.planta_solar), "-"],
             ["Sala 1", v(reporte.sala_1), v(reporte.obs_sala_1)],
             ["Sala 2", v(reporte.sala_2), v(reporte.obs_sala_2)],
             ["Sala Club 2", v(reporte.sala_club2), v(reporte.obs_sala_club2)],

@@ -290,6 +290,10 @@
                     <td class="bg-dark text-light">SISTEMA ATLAS/GPS</td>
                     <td class="text-center" colspan="3">{{ reporte.indicar_cual_cctv }}</td>
                   </tr>
+                  <tr>
+                    <td class="bg-dark text-light">Alguna alarma UGPS activa?</td>
+                    <td class="text-center" colspan="3">{{ reporte.alarma_ugps_activa }}</td>
+                  </tr>
 
                   <tr>
                     <td class="bg-dark text-light">PORTONES</td>
@@ -464,10 +468,15 @@
                     <td class="text-center">{{ reporte.peas_aires }}</td>
                     <td colspan="2" class="text-center">{{ reporte.obs_peas_aires }}</td>                                 
                   </tr>
-                  <tr>
+                <tr>
                     <td>CARGADERO AIRES</td>
                     <td class="text-center">{{ reporte.cargadero_aires }}</td>
                     <td colspan="2" class="text-center">{{ reporte.obs_cargadero_aires }}</td>
+                </tr>
+                <tr>
+                    <td>PLANTA SOLAR</td>
+                    <td class="text-center">{{ reporte.planta_solar }}</td>
+                    <td colspan="2" class="text-center">-</td>
                 </tr>
                 <tr>
                     <td>SALA 1</td>

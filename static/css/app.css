@@ -424,6 +424,11 @@ textarea {
   color: #1e3a8a;
 }
 
+.report-form-page .ugps-highlight-label {
+  font-size: 1.05rem;
+  font-weight: 700;
+}
+
 .report-table tr[hidden] {
   display: none !important;
 }
